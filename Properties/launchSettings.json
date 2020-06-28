@@ -17,7 +17,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "hangman": {
+    "Hangman": {
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "weatherforecast",

@@ -1,3 +1,3 @@
-# hangman
+# Hangman
 
-A dotnet API that exposes a simplistic hangman game solution
+A dotnet API that exposes a simplistic Hangman game solution

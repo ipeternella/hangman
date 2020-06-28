@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using hangman.Models;
+using Hangman.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace hangman.Controllers
+namespace Hangman.Controllers
 {
     [ApiController]
     [Route("[controller]")]

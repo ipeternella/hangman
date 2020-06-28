@@ -10,10 +10,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using hangman.Models;
+using Hangman.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace hangman
+namespace Hangman
 {
     public class Startup
     {

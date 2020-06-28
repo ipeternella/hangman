@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 
-namespace hangman.Models
+namespace Hangman.Models
 {
     public class GameRoomContext : DbContext
     {

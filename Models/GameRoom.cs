@@ -1,4 +1,4 @@
-namespace hangman.Models
+namespace Hangman.Models
 {
     public class GameRoom
     {
