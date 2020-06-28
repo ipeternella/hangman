@@ -1,10 +1,14 @@
 #!/bin/bash
+CSPROJ_PATH=./Hangman/Hangman.csproj
+
 echo "[PRE-RUN]: Creating migrations..."
-dotnet ef migrations add initial
-dotnet ef database update
+dotnet ef migrations add initial --project $CSPROJ_PATH
+
+echo "[PRE-RUN]: Running migrations..."
+dotnet ef database update --project $CSPROJ_PATH
 
 echo "[PRE-RUN]: Building project..."
-dotnet build
+dotnet build $CSPROJ_PATH
 
 echo "[PRE-RUN]: Watching and running project..."
-dotnet watch run
+dotnet watch --project $CSPROJ_PATH run
