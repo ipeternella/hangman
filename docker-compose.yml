@@ -3,8 +3,30 @@ services:
   db:
     image: postgres:10.1-alpine
     ports:
-      - 5432:5432
+      - "${DB_PORT}:${DB_PORT}"
     environment:
       POSTGRES_USER: hangman
       POSTGRES_PASSWORD: hangman
       POSTGRES_DB: hangman
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+    ports:
+      - "${ASPNET_SOCKET_BIND_PORT}:${ASPNET_SOCKET_BIND_PORT}"
+    depends_on:
+      - db
+    command:
+      [
+        "./wait-for-it.sh",
+        "${DB_HOST}:${DB_PORT}",
+        "-t",
+        "120",
+        "--",
+        "./start-from-compose.sh",
+      ]

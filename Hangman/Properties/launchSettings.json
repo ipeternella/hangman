@@ -25,6 +25,15 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
+    },
+    "DockerCompose": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "launchUrl": "weatherforecast",
+      "applicationUrl": "https://0.0.0.0:8080",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "DockerCompose"
+      }
     }
   }
 }
