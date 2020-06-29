@@ -3,7 +3,7 @@ services:
   db:
     image: postgres:10.1-alpine
     ports:
-      - "${DB_PORT}:${DB_PORT}"
+      - "5432:5432"
     environment:
       POSTGRES_USER: hangman
       POSTGRES_PASSWORD: hangman
@@ -18,13 +18,13 @@ services:
     volumes:
       - .:/app
     ports:
-      - "${ASPNET_SOCKET_BIND_PORT}:${ASPNET_SOCKET_BIND_PORT}"
+      - "${ASPNETCORE_SOCKET_BIND_PORT}:${ASPNETCORE_SOCKET_BIND_PORT}"
     depends_on:
       - db
     command:
       [
         "./wait-for-it.sh",
-        "${DB_HOST}:${DB_PORT}",
+        "db:5432",
         "-t",
         "120",
         "--",
