@@ -22,11 +22,10 @@ namespace Hangman.Controllers
             _context = context;
             _logger = logger;
 
-            if (_context.GameRooms.Count() == 0)
-            {
-                _context.GameRooms.Add(new GameRoom { Name = "Game Room Cadinho" });
-                _context.SaveChanges();
-            }
+            if (_context.GameRooms.Any()) return;
+            
+            _context.GameRooms.Add(new GameRoom { Name = "Game Room Cadinho" });
+            _context.SaveChanges();
         }
 
         [HttpGet]
