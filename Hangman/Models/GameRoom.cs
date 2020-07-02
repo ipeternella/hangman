@@ -1,8 +1,7 @@
 namespace Hangman.Models
 {
-    public class GameRoom
+    public class GameRoom : BaseEntity
     {
-        public long Id { get; set; }
-        public string Name { get; set; }
+        
     }
 }
