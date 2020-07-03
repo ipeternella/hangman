@@ -21,18 +21,23 @@
     <Compile Remove="Migrations\20200628133745_initial.Designer.cs" />
     <Compile Remove="Migrations\GameRoomContextModelSnapshot.cs" />
     <Compile Remove="Models\GameRoomContext.cs" />
+    <Compile Remove="Infrastructure\**" />
+    <Compile Remove="Repository\IHangmanRepository.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Remove="Hangman\**" />
+    <EmbeddedResource Remove="Infrastructure\**" />
   </ItemGroup>
 
   <ItemGroup>
     <None Remove="Hangman\**" />
+    <None Remove="Infrastructure\**" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Remove="Hangman\**" />
+    <Content Remove="Infrastructure\**" />
   </ItemGroup>
 
   <ItemGroup>

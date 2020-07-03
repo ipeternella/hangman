@@ -2,7 +2,7 @@ using System.Linq;
 using Hangman.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace Hangman.Infrastructure.Repository
+namespace Hangman.Repository
 {
     /**
      * The Database context of this application. Contains all DbSets used for operations.
