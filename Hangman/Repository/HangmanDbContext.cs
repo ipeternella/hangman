@@ -26,22 +26,21 @@ namespace Hangman.Repository
         }
         private void AutomaticallyAddCreatedAndUpdatedAt()
         {
-            var trackables = ChangeTracker.Entries<BaseEntity>();
-
-            if (trackables != null)
+            var entitiesOnDbContext = ChangeTracker.Entries<BaseEntity>();
+            
+            if (entitiesOnDbContext == null) return;  // nothing was changed on DB context
+            
+            // createdAt addition
+            foreach (var item in entitiesOnDbContext.Where(t => t.State == EntityState.Added))
             {
-                // createdAt
-                foreach (var item in trackables.Where(t => t.State == EntityState.Added))
-                {
-                    item.Entity.CreatedAt = System.DateTime.Now;
-                    item.Entity.UpdatedAt = System.DateTime.Now;
-                }
+                item.Entity.CreatedAt = System.DateTime.Now;
+                item.Entity.UpdatedAt = System.DateTime.Now;
+            }
                 
-                // updatedAt
-                foreach (var item in trackables.Where(t => t.State == EntityState.Modified))
-                {
-                    item.Entity.UpdatedAt = System.DateTime.Now;
-                }
+            // updatedAt addition
+            foreach (var item in entitiesOnDbContext.Where(t => t.State == EntityState.Modified))
+            {
+                item.Entity.UpdatedAt = System.DateTime.Now;
             }
         }
     }
