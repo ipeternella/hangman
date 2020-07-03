@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Hangman.Infrastructure.Repository;
 using Hangman.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -13,10 +14,10 @@ namespace Hangman.Controllers.V1
     {
 
         // for DI
-        private readonly GameRoomContext _context;
+        private readonly HangmanDbContext _context;
         private readonly ILogger<GameRoomController> _logger;
 
-        public GameRoomController(GameRoomContext context, ILogger<GameRoomController> logger)
+        public GameRoomController(HangmanDbContext context, ILogger<GameRoomController> logger)
         {
             _context = context;
             _logger = logger;
@@ -29,13 +30,6 @@ namespace Hangman.Controllers.V1
 
         [HttpGet]
         public ActionResult<IEnumerable<GameRoom>> Get()
-        {
-            return Ok(_context.GameRooms.ToList());
-        }
-        
-        [HttpGet]
-        [Route("async")]
-        public async Task<ActionResult<IEnumerable<GameRoom>>> GetAsync()
         {
             return Ok(_context.GameRooms.ToList());
         }

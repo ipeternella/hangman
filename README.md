@@ -18,3 +18,9 @@ dotnet new xunit -n Tests
 dotnet sln add ./Hangman/Hangman.csproj  # adds project to the solution
 dotnet sln add ./Tests/Tests.csproj  # adds project to the solution
 ```
+
+## Migrations
+
+```bash
+dotnet ef migrations add FirstMigration --project ./Hangman/Hangman.csproj --context HangmanDbContext
+```

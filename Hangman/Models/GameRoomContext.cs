@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+/*using Microsoft.EntityFrameworkCore;
 
 namespace Hangman.Models
 {
@@ -9,4 +9,4 @@ namespace Hangman.Models
         }
         public DbSet<GameRoom> GameRooms { get; set; }
     }
-}
+}*/

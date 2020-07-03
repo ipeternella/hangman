@@ -17,6 +17,10 @@
 
   <ItemGroup>
     <Compile Remove="Hangman\**" />
+    <Compile Remove="Migrations\20200628133745_initial.cs" />
+    <Compile Remove="Migrations\20200628133745_initial.Designer.cs" />
+    <Compile Remove="Migrations\GameRoomContextModelSnapshot.cs" />
+    <Compile Remove="Models\GameRoomContext.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -29,6 +33,10 @@
 
   <ItemGroup>
     <Content Remove="Hangman\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Migrations" />
   </ItemGroup>  
 
 </Project>
