@@ -22,7 +22,6 @@
     <Compile Remove="Migrations\GameRoomContextModelSnapshot.cs" />
     <Compile Remove="Models\GameRoomContext.cs" />
     <Compile Remove="Infrastructure\**" />
-    <Compile Remove="Repository\IHangmanRepository.cs" />
   </ItemGroup>
 
   <ItemGroup>

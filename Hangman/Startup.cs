@@ -12,6 +12,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Hangman.Models;
 using Hangman.Repository;
+using Hangman.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace Hangman
@@ -29,7 +30,7 @@ namespace Hangman
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<HangmanDbContext>(options => options.UseNpgsql(Configuration.GetConnectionString("DBConnection")));
-            services.AddScoped<HangmanRepository<GameRoom>>(); // GameRoomController requires DI of HangmanRepository<GameRoom>
+            services.AddScoped(typeof(IHangmanRepositoryAsync<>), typeof(HangmanRepositoryAsync<>)); // generic repository
             services.AddControllers();
         }
 
