@@ -1,4 +1,6 @@
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Hangman.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -24,6 +26,16 @@ namespace Hangman.Repository
             AutomaticallyAddCreatedAndUpdatedAt();
             return base.SaveChanges();
         }
+        
+        /**
+         * Saves the context to the database (Async version).
+         */
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            AutomaticallyAddCreatedAndUpdatedAt();
+            return base.SaveChangesAsync(cancellationToken);
+        }
+        
         private void AutomaticallyAddCreatedAndUpdatedAt()
         {
             var entitiesOnDbContext = ChangeTracker.Entries<BaseEntity>();
