@@ -10,6 +10,7 @@ using Microsoft.Extensions.Hosting;
 using Hangman.Repository;
 using Hangman.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace Hangman
 {
@@ -32,8 +33,10 @@ namespace Hangman
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger)
         {
+            logger.LogInformation($"Configuring start up with environment: {env.EnvironmentName}");
+            
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -50,35 +53,43 @@ namespace Hangman
                 endpoints.MapControllers();
             });
             
-            // Migrations and seed db (when in development ONLY)
-            Migrate(app, executeSeedDb: env.IsDevelopment());
+            // Migrations and seed db (when in development/compose ONLY)
+            Migrate(app, logger, executeSeedDb: env.IsDevelopment() || env.IsEnvironment("DockerCompose"));
         }
         
         /**
          * Applies possible missing migrations from the database.
          */
-        public static void Migrate(IApplicationBuilder app, bool executeSeedDb = false)
+        public static void Migrate(IApplicationBuilder app, ILogger<Startup> logger, bool executeSeedDb = false)
         {
             using var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope();
             using var context = serviceScope.ServiceProvider.GetService<HangmanDbContext>();
-
+            
             // always execute possible missing migrations
             if (context.Database.GetPendingMigrations().ToList().Any())
+            {
+                logger.LogInformation("Applying migrations...");
                 context.Database.Migrate();
-            
+            }
+
             // seeding DB only when asked
             if (!executeSeedDb) return;
-            SeedDb(context);
+            
+            logger.LogInformation("Seeding the database...");
+            SeedDb(context, logger);
         }
 
         /**
          * Seeds DB with pre-defined entities/models.
          */
-        private static void SeedDb(HangmanDbContext context)
+        private static void SeedDb(HangmanDbContext context, ILogger<Startup> logger)
         {
-            if (context.GameRooms.Any()) return;  // no seeding again
+            if (context.GameRooms.Any()) {
+                logger.LogInformation("Database has already been seeded. Skipping it...");
+                return;
+            }
             
-            // Entities/models seeding...
+            logger.LogInformation("Saving entities...");
             var gameRooms = new List<GameRoom>
             {
                 new GameRoom {Name = "Game Room 1"},
@@ -87,7 +98,7 @@ namespace Hangman
             };
             context.AddRange(gameRooms);
             
-            // final db saving
+            logger.LogInformation("Database has been seeded successfully.");
             context.SaveChanges();
         }
     }
