@@ -22,21 +22,31 @@
     <Compile Remove="Migrations\GameRoomContextModelSnapshot.cs" />
     <Compile Remove="Models\GameRoomContext.cs" />
     <Compile Remove="Infrastructure\**" />
+    <Compile Remove="DTOs\**" />
+    <Compile Remove="Application\NewGameRoomDTO.cs" />
+    <Compile Remove="Migrations\20200703002406_FirstMigration.cs" />
+    <Compile Remove="Migrations\20200703002406_FirstMigration.Designer.cs" />
+    <Compile Remove="Migrations\HangmanDbContextModelSnapshot.cs" />
+    <Compile Remove="Migrations\20200704221809_FirstMigration.cs" />
+    <Compile Remove="Migrations\20200704221809_FirstMigration.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Remove="Hangman\**" />
     <EmbeddedResource Remove="Infrastructure\**" />
+    <EmbeddedResource Remove="DTOs\**" />
   </ItemGroup>
 
   <ItemGroup>
     <None Remove="Hangman\**" />
     <None Remove="Infrastructure\**" />
+    <None Remove="DTOs\**" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Remove="Hangman\**" />
     <Content Remove="Infrastructure\**" />
+    <Content Remove="DTOs\**" />
   </ItemGroup>
 
   <ItemGroup>

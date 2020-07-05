@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Hangman.Application;
 using Hangman.Models;
 using Hangman.Repository.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -14,34 +15,39 @@ namespace Hangman.Controllers.V1
     {
         
         private readonly IHangmanRepositoryAsync<GameRoom> _repository;
+        private readonly IGameRoomServiceAsync _gameRoomServiceAsync;
         private readonly ILogger<GameRoomController> _logger;
 
-        public GameRoomController(IHangmanRepositoryAsync<GameRoom> repository, ILogger<GameRoomController> logger)
+        public GameRoomController(IHangmanRepositoryAsync<GameRoom> repository, ILogger<GameRoomController> logger, IGameRoomServiceAsync gameRoomServiceAsync)
         {
+            _gameRoomServiceAsync = gameRoomServiceAsync;
             _repository = repository;
             _logger = logger;
         }
         
         [HttpGet]
-        [Route("{id}")]
-        public async Task<ActionResult<GameRoom>> Get(string id)
+        public async Task<ActionResult<IEnumerable<GameRoom>>> All()
         {
-            var roomId = new Guid(id);
-            var gameRoom = await _repository.GetById(roomId);
-
-            if (gameRoom == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(gameRoom);
+            var gameRooms = await _gameRoomServiceAsync.GetAll();
+            return Ok(gameRooms);
         }
         
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<GameRoom>>> Get()
+        [Route("{id}")]
+        public async Task<ActionResult<GameRoom>> GetById(string id)
         {
-            var gameRooms = await _repository.All();
-            return Ok(gameRooms);
+            var isValidGuid = Guid.TryParse(id, out var validGuid);
+            if (!isValidGuid) return BadRequest();
+
+            var gameRoom = await _gameRoomServiceAsync.GetById(validGuid);
+            return Ok(gameRoom);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<GameRoom>> Create(NewGameRoomData newGameRoomData)
+        {
+            var gameRoom = await _gameRoomServiceAsync.Create(newGameRoomData);
+            return CreatedAtAction(nameof(GetById), new { id = gameRoom.Id }, gameRoom);
         }
     }
 }

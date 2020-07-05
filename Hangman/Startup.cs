@@ -1,16 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Hangman.Application;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Hangman.Models;
 using Hangman.Repository;
 using Hangman.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -31,6 +24,7 @@ namespace Hangman
         {
             services.AddDbContext<HangmanDbContext>(options => options.UseNpgsql(Configuration.GetConnectionString("DBConnection")));
             services.AddScoped(typeof(IHangmanRepositoryAsync<>), typeof(HangmanRepositoryAsync<>)); // generic repository
+            services.AddScoped<IGameRoomServiceAsync, GameRoomServiceAsync>();
             services.AddControllers();
         }
 
