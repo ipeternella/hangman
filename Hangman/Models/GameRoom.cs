@@ -1,9 +1,12 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace Hangman.Models
 {
     public class GameRoom : BaseEntity
     {
-        public string Name;
+        [Required]
+        [MaxLength(255)]
+        public string Name { get; set; }
     }
 }
