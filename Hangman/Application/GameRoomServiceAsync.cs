@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Hangman.Models;
 using Hangman.Repository.Interfaces;
@@ -10,6 +11,7 @@ namespace Hangman.Application
 {
     public class NewGameRoomData
     {
+        [Required]
         public string Name { get; set; }
     }
 

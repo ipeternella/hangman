@@ -26,13 +26,6 @@ namespace Hangman.Controllers.V1
         }
         
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<GameRoom>>> All()
-        {
-            var gameRooms = await _gameRoomServiceAsync.GetAll();
-            return Ok(gameRooms);
-        }
-        
-        [HttpGet]
         [Route("{id}")]
         public async Task<ActionResult<GameRoom>> GetById(string id)
         {
@@ -41,6 +34,13 @@ namespace Hangman.Controllers.V1
 
             var gameRoom = await _gameRoomServiceAsync.GetById(validGuid);
             return Ok(gameRoom);
+        }
+        
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<GameRoom>>> All()
+        {
+            var gameRooms = await _gameRoomServiceAsync.GetAll();
+            return Ok(gameRooms);
         }
 
         [HttpPost]
