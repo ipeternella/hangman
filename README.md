@@ -1,7 +1,10 @@
 # Hangman
 
-A dotnet API that exposes a simplistic Hangman game solution
+A simplistic Hangman gaming API written in `C#` with `dotnet` framework.
 
+## Disclaimer
+
+This project is a WIP. Therefore, even this `README.md` is far from being finished.
 
 ## Project construction
 
@@ -19,7 +22,7 @@ dotnet sln add ./Hangman/Hangman.csproj  # adds project to the solution
 dotnet sln add ./Tests/Tests.csproj  # adds project to the solution
 ```
 
-## Migrations
+## First Migrations
 
 ```bash
 dotnet ef migrations add FirstMigration --project ./Hangman/Hangman.csproj --context HangmanDbContext
