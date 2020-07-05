@@ -29,6 +29,8 @@
     <Compile Remove="Migrations\HangmanDbContextModelSnapshot.cs" />
     <Compile Remove="Migrations\20200704221809_FirstMigration.cs" />
     <Compile Remove="Migrations\20200704221809_FirstMigration.Designer.cs" />
+    <Compile Remove="Migrations\20200704222138_FirstMigration.cs" />
+    <Compile Remove="Migrations\20200704222138_FirstMigration.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
