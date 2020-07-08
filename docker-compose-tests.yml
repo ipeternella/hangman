@@ -9,7 +9,7 @@ services:
       POSTGRES_PASSWORD: hangman
       POSTGRES_DB: hangman
 
-  app:
+  tests:
     build:
       context: .
       dockerfile: Dockerfile.dev
@@ -17,8 +17,6 @@ services:
       - .env
     volumes:
       - .:/app
-    ports:
-      - "${ASPNETCORE_SOCKET_BIND_PORT}:${ASPNETCORE_SOCKET_BIND_PORT}"
     depends_on:
       - db
     command:
@@ -28,5 +26,5 @@ services:
         "-t",
         "120",
         "--",
-        "./start-from-compose.sh",
+        "./start-tests.sh",
       ]
