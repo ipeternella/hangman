@@ -39,7 +39,10 @@ namespace Hangman.Controllers.V1
         [HttpGet]
         public async Task<ActionResult<IEnumerable<GameRoom>>> All()
         {
+            _logger.LogInformation("Calling gameRoomService...");
             var gameRooms = await _gameRoomServiceAsync.GetAll();
+            
+            _logger.LogInformation($"Returning all gameRooms: {@gameRooms}", gameRooms);
             return Ok(gameRooms);
         }
 
