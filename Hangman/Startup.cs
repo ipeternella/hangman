@@ -11,6 +11,7 @@ using Hangman.Repository;
 using Hangman.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Serilog;
 
 namespace Hangman
 {
@@ -26,6 +27,7 @@ namespace Hangman
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddHttpContextAccessor();
             services.AddDbContext<HangmanDbContext>(options => options.UseNpgsql(Configuration.GetConnectionString("DBConnection")));
             services.AddScoped(typeof(IHangmanRepositoryAsync<>), typeof(HangmanRepositoryAsync<>)); // generic repository
             services.AddScoped<IGameRoomServiceAsync, GameRoomServiceAsync>();
@@ -36,13 +38,16 @@ namespace Hangman
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger)
         {
             logger.LogInformation("Configuring start up with environment: {EnvironmentName}", env.EnvironmentName);
-            
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
             
             app.UseHttpsRedirection();
+            
+            // Reduces a lot of logging boilerplate
+            app.UseSerilogRequestLogging();
 
             app.UseRouting();
 
