@@ -53,8 +53,6 @@ services:
       ES_JAVA_OPTS: "-Xms256m -Xmx512m"
       ELASTIC_PASSWORD: elastic
       discovery.type: single-node
-    networks:
-      - elk
  
   logstash:
     build:
@@ -76,8 +74,6 @@ services:
       - "9600:9600"
     environment:
       LS_JAVA_OPTS: "-Xmx256m -Xms256m"
-    networks:
-      - elk
     depends_on:
       - es
 
@@ -93,14 +89,8 @@ services:
         read_only: true
     ports:
       - "5601:5601"
-    networks:
-      - elk
     depends_on:
       - es
- 
-networks:
-  elk:
-    driver: bridge
 
 volumes:
   elasticsearch:
