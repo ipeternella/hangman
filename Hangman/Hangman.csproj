@@ -54,6 +54,7 @@
     <Content Remove="Hangman\**" />
     <Content Remove="Infrastructure\**" />
     <Content Remove="DTOs\**" />
+    <Content Remove="appsettings.Local.json" />
   </ItemGroup>
 
   <ItemGroup>

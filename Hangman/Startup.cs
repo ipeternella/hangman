@@ -39,7 +39,7 @@ namespace Hangman
         {
             logger.LogInformation("Configuring start up with environment: {EnvironmentName}", env.EnvironmentName);
 
-            if (env.IsDevelopment())
+            if (env.IsDevelopment() || env.IsEnvironment("Local"))
             {
                 app.UseDeveloperExceptionPage();
             }
@@ -59,7 +59,7 @@ namespace Hangman
             });
             
             // Migrations and seed db (when in development/compose ONLY)
-            Migrate(app, logger, executeSeedDb: env.IsDevelopment() || env.IsEnvironment("DockerCompose"));
+            Migrate(app, logger, executeSeedDb: env.IsDevelopment() || env.IsEnvironment("Local") ||  env.IsEnvironment("DockerCompose"));
         }
         
         /**
