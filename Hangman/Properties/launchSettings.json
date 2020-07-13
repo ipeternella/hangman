@@ -25,15 +25,6 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Local"
       }
-    },
-    "DockerCompose": {
-      "commandName": "Project",
-      "launchBrowser": false,
-      "launchUrl": "",
-      "applicationUrl": "https://localhost:8080",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "DockerCompose"
-      }
     }
   }
 }
