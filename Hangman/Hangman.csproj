@@ -16,6 +16,7 @@
     <PackageReference Include="Serilog.AspNetCore" Version="3.2.0" />
     <PackageReference Include="Serilog.Enrichers.CorrelationId" Version="3.0.1" />
     <PackageReference Include="Serilog.Formatting.Elasticsearch" Version="8.1.0" />
+    <PackageReference Include="Serilog.Sinks.Async" Version="1.4.0" />
     <PackageReference Include="Serilog.Sinks.ElasticSearch" Version="8.1.0" />
   </ItemGroup>
 
