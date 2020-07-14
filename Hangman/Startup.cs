@@ -27,11 +27,17 @@ namespace Hangman
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddHttpContextAccessor();
-            services.AddDbContext<HangmanDbContext>(options => options.UseNpgsql(Configuration.GetConnectionString("DBConnection")));
-            services.AddScoped(typeof(IHangmanRepositoryAsync<>), typeof(HangmanRepositoryAsync<>)); // generic repository
-            services.AddScoped<IGameRoomServiceAsync, GameRoomServiceAsync>();
-            services.AddControllers();
+            // PostgreSQL healthcheck
+            services.AddHealthChecks()
+                .AddNpgSql(Configuration.GetConnectionString("DBConnection"));
+            
+            //services.AddHealthChecksUI();
+
+            services.AddHttpContextAccessor()
+                .AddDbContext<HangmanDbContext>(options => options.UseNpgsql(Configuration.GetConnectionString("DBConnection")))
+                .AddScoped(typeof(IHangmanRepositoryAsync<>), typeof(HangmanRepositoryAsync<>)) // generic repository
+                .AddScoped<IGameRoomServiceAsync, GameRoomServiceAsync>()
+                .AddControllers();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -46,15 +52,19 @@ namespace Hangman
             
             app.UseHttpsRedirection();
             
+            // healthcheck dashboard
+            // app.UseHealthChecksUI(options => options.UIPath = "healthcheck-dashboard");
+            
             // Reduces a lot of logging boilerplate
             app.UseSerilogRequestLogging();
 
             app.UseRouting();
 
             app.UseAuthorization();
-
+            
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapHealthChecks("/health");
                 endpoints.MapControllers();
             });
             
