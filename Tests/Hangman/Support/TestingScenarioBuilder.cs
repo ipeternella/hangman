@@ -13,6 +13,12 @@ namespace Tests.Hangman.Support
         {
             _context = context;
         }
+        
+        public void RefreshDatabaseState()
+        {
+            _context.Database.EnsureDeleted();
+            _context.Database.EnsureCreated();
+        }
 
         public void BuildScenarioWithThreeRooms(string name1 = "Room 1", string name2 = "Room 2", string name3 = "Room 3")
         {
