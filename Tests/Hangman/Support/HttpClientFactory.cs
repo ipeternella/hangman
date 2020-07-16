@@ -9,16 +9,19 @@ using Microsoft.Extensions.Logging;
 
 namespace Tests.Hangman.Infrastructure
 {
-    public class CustomWebApplicationFactory<TStartup> : WebApplicationFactory<TStartup> where TStartup: class
+    public class CustomWebApplicationFactory<TStartup> : WebApplicationFactory<TStartup> where TStartup : class
     {
+        // before WebApplicationFactory creates an in-memory testing application
+        // this method is called with an IWebHostBuilder (initializer abstraction)
+        // to configure the testing application server
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
+ 
             builder.ConfigureServices(services =>
             {
                 // Remove the app's ApplicationDbContext registration.
-                var descriptor = services.SingleOrDefault(
-                    d => d.ServiceType ==
-                         typeof(DbContextOptions<HangmanDbContext>));
+                var descriptor = services.SingleOrDefault(d => d.ServiceType ==
+                                                               typeof(DbContextOptions<HangmanDbContext>));
 
                 if (descriptor != null)
                 {
@@ -30,9 +33,9 @@ namespace Tests.Hangman.Infrastructure
 
                 // Create a scope to obtain a reference to the database
                 // context (ApplicationDbContext).
-                using var scope = sp.CreateScope();
+                using var scope = sp.CreateScope();  // end of the scope: disposes of services
+                var scopedServices = scope.ServiceProvider;  // provides services such as injected ones
                 
-                var scopedServices = scope.ServiceProvider;
                 var db = scopedServices.GetRequiredService<HangmanDbContext>();
                 var logger = scopedServices
                     .GetRequiredService<ILogger<CustomWebApplicationFactory<TStartup>>>();
@@ -40,17 +43,17 @@ namespace Tests.Hangman.Infrastructure
                 // Ensure the database is created.
                 db.Database.EnsureCreated();
 
-                try
-                {
-                    // Seed the database with test data.
-                    // Utilities.InitializeDbForTests(db);
-                }
-                catch (Exception ex)
-                {
-                    logger.LogError(ex, "An error occurred seeding the " +
-                                        "database with test messages. Error: {Message}", ex.Message);
-                }
-            }); 
+                // try
+                // {
+                //     // Seed the database with test data.
+                //     // Utilities.InitializeDbForTests(db);
+                // }
+                // catch (Exception ex)
+                // {
+                //     logger.LogError(ex, "An error occurred seeding the " +
+                //                         "database with test messages. Error: {Message}", ex.Message);
+                // }
+            });
         }
     }
 }
