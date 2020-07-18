@@ -4,7 +4,6 @@ using Hangman.Repository;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Serilog;
 
@@ -12,9 +11,11 @@ namespace Tests.Hangman.Support
 {
     public class TestingCaseFixture<TStartup> : IDisposable where TStartup : class
     {
+        // private testing properties
         private readonly IServiceProvider _services;
-        protected IDbContextTransaction Transaction { get; }
-
+        private readonly IDbContextTransaction _transaction;
+     
+        // properties used by testing classes
         protected readonly HttpClient Client;
         protected HangmanDbContext DbContext { get; set; }
 
@@ -32,17 +33,17 @@ namespace Tests.Hangman.Support
             // DbContext = GetRequiredService<HangmanDbContext>();
             Client = server.CreateClient();
             DbContext = GetService<HangmanDbContext>();
-            Transaction = DbContext.Database.BeginTransaction();
+            _transaction = DbContext.Database.BeginTransaction();
         }
 
-        protected T GetService<T>() => (T) _services.GetService(typeof(T));
+        private T GetService<T>() => (T) _services.GetService(typeof(T));
 
         public void Dispose()
         {
-            if (Transaction == null) return;
+            if (_transaction == null) return;
 
-            Transaction.Rollback();
-            Transaction.Dispose();
+            _transaction.Rollback();
+            _transaction.Dispose();
         }
     }
 }
