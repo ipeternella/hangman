@@ -6,39 +6,12 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
-using Microsoft.Extensions.DependencyInjection;
-using Hangman.Controllers.V1;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.Configuration;
 using Serilog;
 
 namespace Tests.Hangman.Support
 {
-    public class Fixture
-    {
-        /**
-         * Static constructor: run only once throughout the application, before the first instance
-         * is created.
-         */
-        static Fixture()
-        {
-            CreateDatabaseAndMigrate();
-        }
-    
-        private static void CreateDatabaseAndMigrate()
-        {
-            var dbConnectionString = "Host=localhost;Port=5432;Username=hangman;Password=hangman;Database=hangman;";
-            var options = new DbContextOptionsBuilder<HangmanDbContext>()
-                .UseNpgsql(dbConnectionString)
-                .Options;
-    
-            new HangmanDbContext(options).Database.Migrate();
-        }
-    }
-    
     public class TestingCaseFixture<TStartup> : IDisposable where TStartup : class
     {
-        private readonly TestServer _server;
         private readonly IServiceProvider _services;
         protected IDbContextTransaction Transaction { get; }
 
@@ -52,12 +25,12 @@ namespace Tests.Hangman.Support
                 .UseSerilog();
 
             // construct the test server and client we'll use to send requests
-            _server = new TestServer(builder);
-            _services = _server.Host.Services;  // services provider of the host (after startup)
+            var server = new TestServer(builder);
+            _services = server.Host.Services;  // services provider of the host (after startup)
 
             // resolve a DbContext instance from the container and begin a transaction on the context.
             // DbContext = GetRequiredService<HangmanDbContext>();
-            Client = _server.CreateClient();
+            Client = server.CreateClient();
             DbContext = GetService<HangmanDbContext>();
             Transaction = DbContext.Database.BeginTransaction();
         }
