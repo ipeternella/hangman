@@ -5,38 +5,40 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 
 namespace Tests.Hangman.Support
 {
+    /**
+     * Testing Case class which opens a DB transaction and rolls it back on the end of every
+     * test in order have a clean database for every executed test.
+     */
     public class TestingCaseFixture<TStartup> : IDisposable where TStartup : class
     {
         // private testing properties
-        private readonly IServiceProvider _services;
         private readonly IDbContextTransaction _transaction;
      
         // properties used by testing classes
         protected readonly HttpClient Client;
-        protected HangmanDbContext DbContext { get; set; }
+        protected HangmanDbContext DbContext { get; }
 
-        public TestingCaseFixture()
+        protected TestingCaseFixture()
         {
             var builder = WebHost.CreateDefaultBuilder()
                 .UseStartup<TStartup>()
                 .UseSerilog();
 
-            // construct the test server and client we'll use to send requests
+            // constructs the testing server with the WebHostBuilder configuration
+            // Startup class configures injected mocked services, and middleware (ConfigureServices, etc.)  
             var server = new TestServer(builder);
-            _services = server.Host.Services;  // services provider of the host (after startup)
+            var services = server.Host.Services;
 
             // resolve a DbContext instance from the container and begin a transaction on the context.
-            // DbContext = GetRequiredService<HangmanDbContext>();
             Client = server.CreateClient();
-            DbContext = GetService<HangmanDbContext>();
+            DbContext = services.GetRequiredService<HangmanDbContext>();
             _transaction = DbContext.Database.BeginTransaction();
         }
-
-        private T GetService<T>() => (T) _services.GetService(typeof(T));
 
         public void Dispose()
         {
