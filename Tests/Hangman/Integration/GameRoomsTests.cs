@@ -2,7 +2,6 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using Hangman.Application;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Tests.Hangman.Support;
@@ -12,7 +11,7 @@ using Xunit;
 
 namespace Tests.Hangman.Integration
 {
-    public class GameRoomsTests : TestingCaseFixture<HangmanProject.TestStartUp>
+    public class GameRoomsTests : TestingCaseFixture<TestingStartUp>
     {
         [Theory(DisplayName = "Should make a request to /api/v1/gameroom and get an HTTP 200")]
         [InlineData("/api/v1/gameroom")]
