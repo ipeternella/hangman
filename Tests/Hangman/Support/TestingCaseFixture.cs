@@ -35,39 +35,7 @@ namespace Tests.Hangman.Support
             new HangmanDbContext(options).Database.Migrate();
         }
     }
-
-    public class TestStartup
-    {
-        public TestStartup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
-
-        public IConfiguration Configuration { get; }
-
-        public void Configure(IApplicationBuilder app, HangmanDbContext db)
-        {
-            app.UseHttpsRedirection();
-            app.UseRouting();
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
-        }
-
-        public void ConfigureServices(IServiceCollection services)
-        {
-            var assembly = typeof(GameRoomController).Assembly;
-
-            services.AddDbContext<HangmanDbContext>(
-                    options => options.UseNpgsql(
-                        Configuration.GetConnectionString("DBConnection")),
-                    ServiceLifetime.Singleton)
-                .AddControllers()
-                .AddApplicationPart(assembly);
-        }
-    }
-
+    
     public class TestingCaseFixture<TStartup> : IDisposable where TStartup : class
     {
         private readonly TestServer _server;
