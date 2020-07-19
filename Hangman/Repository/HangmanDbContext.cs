@@ -17,8 +17,8 @@ namespace Hangman.Repository
         }
 
         public DbSet<GameRoom> GameRooms { get; set; }
-        public DbSet<User> Users { get; set; }
-        public DbSet<GameRoomUser> GameRoomUsers { get; set; }
+        public DbSet<Player> Players { get; set; }
+        public DbSet<GameRoomPlayer> GameRoomPlayers { get; set; }
 
         /**
          * Saves the context to the database. Adds CreatedAt and UpdatedAt.
@@ -40,18 +40,18 @@ namespace Hangman.Repository
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<GameRoomUser>()
-                .HasKey(gameRoomUser => new {gameRoomUser.GameRoomId, gameRoomUser.UserId});
+            modelBuilder.Entity<GameRoomPlayer>()
+                .HasKey(gameRoomPlayer => new {gameRoomPlayer.GameRoomId, UserId = gameRoomPlayer.PlayerId});
 
-            modelBuilder.Entity<GameRoomUser>()
-                .HasOne(gameRoomUser => gameRoomUser.User)
-                .WithMany(user => user.GameRoomUsers)
-                .HasForeignKey(gameRoomUser => gameRoomUser.UserId);
+            modelBuilder.Entity<GameRoomPlayer>()
+                .HasOne(gameRoomPlayer => gameRoomPlayer.Player)
+                .WithMany(user => user.GameRoomPlayers)
+                .HasForeignKey(gameRoomPlayer => gameRoomPlayer.PlayerId);
 
-            modelBuilder.Entity<GameRoomUser>()
-                .HasOne(gameRoomUser => gameRoomUser.GameRoom)
-                .WithMany(gameRoom => gameRoom.GameRoomUsers)
-                .HasForeignKey(gameRoomUser => gameRoomUser.GameRoomId);
+            modelBuilder.Entity<GameRoomPlayer>()
+                .HasOne(gameRoomPlayer => gameRoomPlayer.GameRoom)
+                .WithMany(gameRoom => gameRoom.GameRoomPlayers)
+                .HasForeignKey(gameRoomPlayer => gameRoomPlayer.GameRoomId);
         }
 
         private void AutomaticallyAddCreatedAndUpdatedAt()

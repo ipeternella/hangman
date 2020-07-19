@@ -43,6 +43,8 @@
     <Compile Remove="Migrations\20200704222138_FirstMigration.cs" />
     <Compile Remove="Migrations\20200704222138_FirstMigration.Designer.cs" />
     <Compile Remove="Infra\LogEnrichers.cs" />
+    <Compile Remove="Application\IUserService.cs" />
+    <Compile Remove="Application\UserService.cs" />
   </ItemGroup>
 
   <ItemGroup>
