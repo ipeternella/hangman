@@ -4,7 +4,6 @@ using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Hangman.Models;
 using Hangman.Repository.Interfaces;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 namespace Hangman.Application
