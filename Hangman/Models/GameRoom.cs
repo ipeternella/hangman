@@ -43,5 +43,8 @@ namespace Hangman.Models
         
         [Required]
         public bool IsBanned { get; set; }
+        
+        [Required]
+        public bool IsInRoom { get; set; }
     } 
 }
