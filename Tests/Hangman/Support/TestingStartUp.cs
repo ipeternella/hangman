@@ -36,6 +36,7 @@ namespace Tests.Hangman.Support
                     options.UseNpgsql(Configuration.GetConnectionString("DBConnection")), ServiceLifetime.Singleton)
                 .AddScoped(typeof(IHangmanRepositoryAsync<>), typeof(HangmanRepositoryAsync<>)) // generic repository
                 .AddScoped<IGameRoomServiceAsync, GameRoomServiceAsync>()
+                .AddScoped<IPlayerServiceAsync, PlayerServiceAsync>()
                 .AddControllers()
                 .AddApplicationPart(startupAssembly) // adds controllers from main project
                 .AddControllersAsServices();

@@ -44,6 +44,7 @@ namespace Hangman
                     options.UseNpgsql(Configuration.GetConnectionString("DBConnection")))
                 .AddScoped(typeof(IHangmanRepositoryAsync<>), typeof(HangmanRepositoryAsync<>)) // generic repository
                 .AddScoped<IGameRoomServiceAsync, GameRoomServiceAsync>()
+                .AddScoped<IPlayerServiceAsync, PlayerServiceAsync>()
                 .AddControllers();
         }
 
