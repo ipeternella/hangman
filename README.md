@@ -83,7 +83,7 @@ dotnet sln add ./Tests/Tests.csproj  # adds project to the solution
 ## Adding migrations
 
 ```bash
-dotnet ef migrations add FirstMigration --project ./Hangman/Hangman.csproj --context HangmanDbContext
+dotnet ef migrations add MigrationName --project ./Hangman/Hangman.csproj --context HangmanDbContext -v
 ```
 
 ## Removing a migration (non-applied)
