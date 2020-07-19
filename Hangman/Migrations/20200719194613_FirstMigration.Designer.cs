@@ -10,8 +10,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Hangman.Migrations
 {
     [DbContext(typeof(HangmanDbContext))]
-    [Migration("20200719183556_AddedIsInRoom")]
-    partial class AddedIsInRoom
+    [Migration("20200719194613_FirstMigration")]
+    partial class FirstMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

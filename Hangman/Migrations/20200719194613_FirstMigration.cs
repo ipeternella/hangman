@@ -3,10 +3,24 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Hangman.Migrations
 {
-    public partial class GameRoomPlayer : Migration
+    public partial class FirstMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "GameRooms",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    UpdatedAt = table.Column<DateTime>(nullable: true),
+                    Name = table.Column<string>(maxLength: 255, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GameRooms", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "Players",
                 columns: table => new
@@ -31,7 +45,8 @@ namespace Hangman.Migrations
                     CreatedAt = table.Column<DateTime>(nullable: false),
                     UpdatedAt = table.Column<DateTime>(nullable: true),
                     IsHost = table.Column<bool>(nullable: false),
-                    IsBanned = table.Column<bool>(nullable: false)
+                    IsBanned = table.Column<bool>(nullable: false),
+                    IsInRoom = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {

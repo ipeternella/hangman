@@ -45,6 +45,8 @@
     <Compile Remove="Infra\LogEnrichers.cs" />
     <Compile Remove="Application\IUserService.cs" />
     <Compile Remove="Application\UserService.cs" />
+    <Compile Remove="Migrations\20200705154221_FirstMigration.cs" />
+    <Compile Remove="Migrations\20200705154221_FirstMigration.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
