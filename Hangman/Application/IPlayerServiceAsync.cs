@@ -10,5 +10,6 @@ namespace Hangman.Application
         public Task<Player> GetById(Guid id);
         public Task<IEnumerable<Player>> GetAll();
         public Task<Player> Create(NewPlayerData newPlayerData);
+        public Task<Player> GetByPlayerName(string playerName);
     }
 }
