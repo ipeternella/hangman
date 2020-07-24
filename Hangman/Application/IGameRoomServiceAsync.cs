@@ -11,5 +11,6 @@ namespace Hangman.Application
         public Task<GameRoom> GetById(Guid id);
         public Task<IEnumerable<GameRoom>> GetAll();
         public Task<GameRoom> Create(NewGameRoomData newGameRoomData);
+        public Task<GameRoomPlayer> JoinRoom(GameRoom gameRoom, Player player);
     }
 }

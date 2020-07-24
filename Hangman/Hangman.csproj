@@ -47,18 +47,23 @@
     <Compile Remove="Application\UserService.cs" />
     <Compile Remove="Migrations\20200705154221_FirstMigration.cs" />
     <Compile Remove="Migrations\20200705154221_FirstMigration.Designer.cs" />
+    <Compile Remove="Migrations\20200719194613_FirstMigration.cs" />
+    <Compile Remove="Migrations\20200719194613_FirstMigration.Designer.cs" />
+    <Compile Remove="Migrations\Hangman\**" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Remove="Hangman\**" />
     <EmbeddedResource Remove="Infrastructure\**" />
     <EmbeddedResource Remove="DTOs\**" />
+    <EmbeddedResource Remove="Migrations\Hangman\**" />
   </ItemGroup>
 
   <ItemGroup>
     <None Remove="Hangman\**" />
     <None Remove="Infrastructure\**" />
     <None Remove="DTOs\**" />
+    <None Remove="Migrations\Hangman\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -66,6 +71,7 @@
     <Content Remove="Infrastructure\**" />
     <Content Remove="DTOs\**" />
     <Content Remove="appsettings.Local.json" />
+    <Content Remove="Migrations\Hangman\**" />
   </ItemGroup>
 
   <ItemGroup>

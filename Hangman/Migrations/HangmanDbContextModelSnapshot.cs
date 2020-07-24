@@ -53,7 +53,9 @@ namespace Hangman.Migrations
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<Guid>("Id")
-                        .HasColumnType("uuid");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasDefaultValue(new Guid("096938ab-7f67-4c41-8cb3-8cccc4d4c947"));
 
                     b.Property<bool>("IsBanned")
                         .HasColumnType("boolean");

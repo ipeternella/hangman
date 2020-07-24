@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -41,7 +42,7 @@ namespace Hangman.Repository
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<GameRoomPlayer>()
-                .HasKey(gameRoomPlayer => new {gameRoomPlayer.GameRoomId, UserId = gameRoomPlayer.PlayerId});
+                .HasKey(gameRoomPlayer => new {gameRoomPlayer.GameRoomId,  gameRoomPlayer.PlayerId});
 
             modelBuilder.Entity<GameRoomPlayer>()
                 .HasOne(gameRoomPlayer => gameRoomPlayer.Player)
@@ -52,6 +53,11 @@ namespace Hangman.Repository
                 .HasOne(gameRoomPlayer => gameRoomPlayer.GameRoom)
                 .WithMany(gameRoom => gameRoom.GameRoomPlayers)
                 .HasForeignKey(gameRoomPlayer => gameRoomPlayer.GameRoomId);
+            
+            // adds Id for GameRoomPlayer as the primary-key is composed of GameRoomId + PlayerId
+            modelBuilder.Entity<GameRoomPlayer>()
+                .Property(gameRoomPlayer => gameRoomPlayer.Id)
+                .HasDefaultValue(Guid.NewGuid());
         }
 
         private void AutomaticallyAddCreatedAndUpdatedAt()
@@ -65,6 +71,11 @@ namespace Hangman.Repository
             {
                 item.Entity.CreatedAt = System.DateTime.Now;
                 item.Entity.UpdatedAt = System.DateTime.Now;
+
+                if (item.GetType().Name == "GameRoomPlayer")
+                {
+                    item.Entity.Id = new Guid();
+                }
             }
 
             // updatedAt addition
