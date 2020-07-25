@@ -1,7 +1,9 @@
+using System;
 using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Tests.Hangman.Support;
@@ -57,6 +59,45 @@ namespace Tests.Hangman.Integration
 
             Assert.Equal(createdGameRoomId, getResponseAsJson["id"]);
             Assert.Equal(createdGameRoomName, getResponseAsJson["name"]);
+        }
+
+        [Theory(DisplayName = "Should make a player join a room and get an HTTP 201")]
+        [InlineData("/api/v1/gameroom")]
+        public async Task TestPlayerShouldJoinRoomWithoutBeingHost(string url)
+        {
+            // arrange
+            var testingScenarioBuilder = new TestingScenarioBuilder(DbContext);
+            var (rooms, players) = await testingScenarioBuilder.BuildScenarioWithThreeRoomsAndThreePlayers();  // deconstruction
+            
+            var gameRoomOne = rooms[0];
+            var playerOne = players[0];
+
+            var postData = JsonConvert.SerializeObject(new
+            {
+                PlayerName = playerOne.Name
+            });
+            var payload = new StringContent(postData, Encoding.UTF8, "application/json");
+
+            // act
+            var gameRoomUrl = url + $"/{gameRoomOne.Id}/join";
+            var postResponse = await Client.PostAsync(gameRoomUrl, payload);
+
+            // assert
+            var gameRoomPlayer = await DbContext.GameRoomPlayers.FirstAsync();
+            var postResponseAsJson = JObject.Parse(await postResponse.Content.ReadAsStringAsync());
+            
+            // assert - response
+            Assert.Equal(HttpStatusCode.Created, postResponse.StatusCode);
+            Assert.Equal(gameRoomOne.Id.ToString(), postResponseAsJson["gameRoomId"]);
+            Assert.Equal(playerOne.Id.ToString(), postResponseAsJson["playerId"]);
+            
+            // assert - database
+            Assert.Equal(1, await DbContext.GameRoomPlayers.CountAsync());
+            Assert.Equal(gameRoomPlayer.GameRoomId, gameRoomOne.Id);
+            Assert.Equal(gameRoomPlayer.PlayerId, playerOne.Id);
+            Assert.False(gameRoomPlayer.IsHost);
+            Assert.False(gameRoomPlayer.IsBanned);
+            Assert.True(gameRoomPlayer.IsInRoom);  // in room, but not host
         }
     }
 }
