@@ -86,6 +86,11 @@ namespace Hangman.Migrations
                     b.Property<Guid>("GuessWordId")
                         .HasColumnType("uuid");
 
+                    b.Property<string>("Letter")
+                        .IsRequired()
+                        .HasColumnType("character varying(1)")
+                        .HasMaxLength(1);
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp without time zone");
 
@@ -110,6 +115,11 @@ namespace Hangman.Migrations
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Word")
+                        .IsRequired()
+                        .HasColumnType("character varying(255)")
+                        .HasMaxLength(255);
 
                     b.HasKey("Id");
 

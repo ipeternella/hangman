@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Hangman.Migrations
 {
-    public partial class GuessWordLetterMigration : Migration
+    public partial class FirstMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -42,7 +42,8 @@ namespace Hangman.Migrations
                     Id = table.Column<Guid>(nullable: false),
                     CreatedAt = table.Column<DateTime>(nullable: false),
                     UpdatedAt = table.Column<DateTime>(nullable: true),
-                    GameRoomId = table.Column<Guid>(nullable: false)
+                    GameRoomId = table.Column<Guid>(nullable: false),
+                    Word = table.Column<string>(maxLength: 255, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -92,7 +93,8 @@ namespace Hangman.Migrations
                     Id = table.Column<Guid>(nullable: false),
                     CreatedAt = table.Column<DateTime>(nullable: false),
                     UpdatedAt = table.Column<DateTime>(nullable: true),
-                    GuessWordId = table.Column<Guid>(nullable: false)
+                    GuessWordId = table.Column<Guid>(nullable: false),
+                    Letter = table.Column<string>(maxLength: 1, nullable: false)
                 },
                 constraints: table =>
                 {
