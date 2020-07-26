@@ -56,7 +56,7 @@ namespace Tests.Hangman.Support
             {
                 GameRoom = gameRoom,
                 Player = player,
-                IsHost = isInRoom,
+                IsHost = isHost,
                 IsBanned = isBanned,
                 IsInRoom = isInRoom,
             };
