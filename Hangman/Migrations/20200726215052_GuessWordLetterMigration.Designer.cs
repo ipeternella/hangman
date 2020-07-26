@@ -3,15 +3,17 @@ using System;
 using Hangman.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Hangman.Migrations
 {
     [DbContext(typeof(HangmanDbContext))]
-    partial class HangmanDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200726215052_GuessWordLetterMigration")]
+    partial class GuessWordLetterMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
