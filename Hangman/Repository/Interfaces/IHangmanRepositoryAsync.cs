@@ -9,7 +9,6 @@ namespace Hangman.Repository.Interfaces
     public interface IHangmanRepositoryAsync<T> where T : BaseEntity
     {
         ValueTask<T> GetById(Guid id);
-        ValueTask<T> GetById(params Guid[] id);
         ValueTask<T> Get(Expression<Func<T, bool>> filterPredicate);
         Task<IEnumerable<T>> All();
         ValueTask<IEnumerable<T>> Filter(Expression<Func<T, bool>> filterPredicate = null);
