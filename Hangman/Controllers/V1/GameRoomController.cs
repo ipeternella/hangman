@@ -94,5 +94,33 @@ namespace Hangman.Controllers.V1
             var gameRoomPlayerUpdated = await _gameRoomServiceAsync.LeaveRoom(gameRoomPlayer);
             return StatusCode(200, new {playerId = player.Id, gameRoomId = gameRoom.Id, isInRoom = gameRoomPlayerUpdated.IsInRoom});
         }
+        
+        // [HttpGet]
+        // [Route("{roomId}/guessword")]
+        // public async Task<ActionResult<IEnumerable<GuessLetter>>> CreateGuessWordInRoom(Guid roomId, NewGuessWordData newGuessWordData)
+        // {
+        //     // TODO: gets all guess words of a given room
+        // }
+        
+        // [HttpPost]
+        // [Route("{roomId}/guessword")]
+        // public async Task<ActionResult<GameRoom>> CreateGuessLetter(Guid roomId, Guid guessWordId)
+        // {
+        //     //  TODO: creates a new guess word in a given room
+        // }
+
+        // [HttpGet]
+        // [Route("{roomId}/guessword/{guessWordId}/guessletter")]
+        // public async Task<ActionResult<IEnumerable<GuessLetter>>> CreateGuessWord(Guid roomId, NewGuessWordData newGuessWordData)
+        // {
+        //     //  TODO: gets all guess letters of a given guess word
+        // }
+
+        // [HttpPost]
+        // [Route("{roomId}/guessword/{guessWordId}/guessletter")]
+        // public async Task<ActionResult<GameRoom>> CreateGuessWord(Guid roomId, NewGuessWordData newGuessWordData)
+        // {
+        //     //  TODO: creates a new guess letter for a given guess word (in a given game room)
+        // }
     }
 }

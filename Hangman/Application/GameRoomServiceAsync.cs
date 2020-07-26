@@ -9,6 +9,11 @@ using Microsoft.Extensions.Logging;
 
 namespace Hangman.Application
 {
+    public class NewGuessWordData
+    {
+        [Required] public string GuessWord { get; set; } = default!;  // null-forgiving as this property is required
+    }
+    
     public class JoinRoomData
     {
         [Required] public string PlayerName { get; set; } = default!;  // null-forgiving as this property is required
