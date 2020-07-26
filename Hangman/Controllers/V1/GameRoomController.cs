@@ -16,7 +16,7 @@ namespace Hangman.Controllers.V1
         private readonly IPlayerServiceAsync _playerServiceAsync;
         private readonly ILogger<GameRoomController> _logger;
 
-        public GameRoomController(IGameRoomServiceAsync gameRoomServiceAsync, 
+        public GameRoomController(IGameRoomServiceAsync gameRoomServiceAsync,
             IPlayerServiceAsync playerServiceAsync,
             ILogger<GameRoomController> logger)
         {
@@ -61,16 +61,17 @@ namespace Hangman.Controllers.V1
         {
             var playerName = joinRoomData.PlayerName;
             _logger.LogInformation("Player {playerName:l} wants to join room {id:l}", playerName, id);
-            
+
             var gameRoom = await _gameRoomServiceAsync.GetById(id);
             if (gameRoom == null) return BadRequest(new {message = "Game Room was not found!"});
 
             _logger.LogInformation("Room was found. Checking if player is valid...");
             var player = await _playerServiceAsync.GetByPlayerName(playerName);
             if (player == null) return BadRequest(new {message = "Player was not found!"});
-            
+
             var gameRoomPlayer = await _gameRoomServiceAsync.JoinRoom(gameRoom, player);
-            return StatusCode(200, new {playerId = player.Id, gameRoomId = gameRoom.Id, isInRoom = gameRoomPlayer.IsInRoom});
+            return StatusCode(200,
+                new {playerId = player.Id, gameRoomId = gameRoom.Id, isInRoom = gameRoomPlayer.IsInRoom});
         }
 
         [HttpPost]
@@ -79,35 +80,56 @@ namespace Hangman.Controllers.V1
         {
             var playerName = joinRoomData.PlayerName;
             _logger.LogInformation("Player {playerName:l} wants to leave room {id:l}", playerName, id);
-            
+
             var gameRoom = await _gameRoomServiceAsync.GetById(id);
             if (gameRoom == null) return BadRequest(new {message = "Game Room was not found!"});
-            
+
             _logger.LogInformation("Room was found. Checking if player is valid...");
             var player = await _playerServiceAsync.GetByPlayerName(playerName);
             if (player == null) return BadRequest(new {message = "Player was not found!"});
-            
+
             // leave the room, if he was previously in it
             var gameRoomPlayer = await _gameRoomServiceAsync.GetPlayerRoomData(gameRoom, player);
             if (gameRoomPlayer == null) return BadRequest(new {message = "Player not found in this room!"});
 
             var gameRoomPlayerUpdated = await _gameRoomServiceAsync.LeaveRoom(gameRoomPlayer);
-            return StatusCode(200, new {playerId = player.Id, gameRoomId = gameRoom.Id, isInRoom = gameRoomPlayerUpdated.IsInRoom});
+            return StatusCode(200,
+                new {playerId = player.Id, gameRoomId = gameRoom.Id, isInRoom = gameRoomPlayerUpdated.IsInRoom});
         }
-        
+
         // [HttpGet]
         // [Route("{roomId}/guessword")]
         // public async Task<ActionResult<IEnumerable<GuessLetter>>> CreateGuessWordInRoom(Guid roomId, NewGuessWordData newGuessWordData)
         // {
         //     // TODO: gets all guess words of a given room
         // }
+
+        [HttpPost]
+        [Route("{id}/guessword")]
+        public async Task<ActionResult<GameRoom>> CreateGuessLetter(Guid id, NewGuessWordData newGuessWordData)
+        {
+            var newGuessWord = newGuessWordData.GuessWord;
+            var playerName = newGuessWordData.PlayerName;
+            _logger.LogInformation("Player {playerName:l} wants to leave room {id:l}", playerName, newGuessWord);
         
-        // [HttpPost]
-        // [Route("{roomId}/guessword")]
-        // public async Task<ActionResult<GameRoom>> CreateGuessLetter(Guid roomId, Guid guessWordId)
-        // {
-        //     //  TODO: creates a new guess word in a given room
-        // }
+            var gameRoom = await _gameRoomServiceAsync.GetById(id);
+            if (gameRoom == null) return BadRequest(new {message = "Game Room was not found!"});
+        
+            _logger.LogInformation("Room was found. Checking if player is valid...");
+            var player = await _playerServiceAsync.GetByPlayerName(playerName);
+            if (player == null) return BadRequest(new {message = "Host was not found!"});
+            
+            _logger.LogInformation("Checking if the player is the host of the room...");
+            var gameRoomPlayer = await _gameRoomServiceAsync.GetPlayerRoomData(gameRoom, player);
+            // if (gameRoomPlayer == null || !gameRoomPlayer.IsHost)
+            // {
+            //     return BadRequest(new
+            //         {message = "Player is not the host of the room. Only the host can create new words."});
+            // }
+            
+            var createdGuessWord = await _gameRoomServiceAsync.CreateGuessWord(gameRoom, newGuessWord);
+            return StatusCode(201, new {Id = createdGuessWord.Id, GuessWord = createdGuessWord.Word});
+        }
 
         // [HttpGet]
         // [Route("{roomId}/guessword/{guessWordId}/guessletter")]

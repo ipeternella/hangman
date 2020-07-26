@@ -26,6 +26,10 @@ namespace Hangman.Models
         [Required] 
         public Guid GameRoomId { get; set; }
         
+        [Required] 
+        [MaxLength(255)] 
+        public string Word { get; set; } = null!;
+
         public ICollection<GuessLetter> GuessLetters { get; set; } = null!;
     }
     
@@ -36,6 +40,10 @@ namespace Hangman.Models
 
         [Required]
         public Guid GuessWordId { get; set; }
+        
+        [Required] 
+        [MaxLength(1)] 
+        public string Letter { get; set; } = null!;
     }
     
     public class Player : BaseEntity
