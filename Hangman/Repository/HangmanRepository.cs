@@ -55,7 +55,7 @@ namespace Hangman.Repository
             _dbContext.Entry(entity).State = EntityState.Modified;
             _dbContext.SaveChanges();
         }
-        
+
         public int Count(Expression<Func<T, bool>> predicate)
         {
             return predicate == null ? _dbSet.Count() : _dbSet.Count(predicate);

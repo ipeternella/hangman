@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Hangman.Models;
-using Hangman.Repository;
 using Hangman.Repository.Interfaces;
 using Microsoft.Extensions.Logging;
 
@@ -62,6 +61,19 @@ namespace Hangman.Application
         // join room (without joining, can't make moves!)
         public async Task<GameRoomPlayer> JoinRoom(GameRoom gameRoom, Player player, bool isHost = false)
         {
+            var previousGameRoomPlayer = await _repositoryGameRoomPlayer.Get(
+                grp => (grp.PlayerId == player.Id) && (grp.GameRoomId == gameRoom.Id));
+            
+            if (previousGameRoomPlayer != null)
+            {
+                _logger.LogInformation("Player had previously join this room...");
+                previousGameRoomPlayer.IsInRoom = true;
+                await _repositoryGameRoomPlayer.Update(previousGameRoomPlayer);
+
+                return previousGameRoomPlayer;
+            }
+
+            _logger.LogInformation("First time player is joining this room...");
             var gameRoomPlayer = new GameRoomPlayer()
             {
                 GameRoom = gameRoom,

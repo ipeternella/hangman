@@ -66,20 +66,18 @@ namespace Hangman.Controllers.V1
             _logger.LogInformation("Player {playerName:l} wants to join the room {id:l}", playerName, id);
             
             var isValidGuid = Guid.TryParse(id, out var validGameRoomId);
-            if (!isValidGuid) return BadRequest();
+            if (!isValidGuid) return BadRequest(new {message = "Invalid Guid for Game Room!"});
 
             _logger.LogInformation("Room id is valid. Checking if it exists...");
             var gameRoom = await _gameRoomServiceAsync.GetById(validGameRoomId);
-            if (gameRoom == null) return BadRequest();
+            if (gameRoom == null) return BadRequest(new {message = "Game Room was not found!"});
 
             _logger.LogInformation("Room was found. Checking if player is valid...");
             var player = await _playerServiceAsync.GetByPlayerName(playerName);
-            if (player == null) return BadRequest();
+            if (player == null) return BadRequest(new {message = "Player was not found!"});
             
-            var gameRoomPlayer = await _gameRoomServiceAsync.JoinRoom(gameRoom, player);
-            
-            // TODO: create REST route to get the created resource -- that's why CreatedAtAction was not used here!
-            return StatusCode(201, new {id = gameRoomPlayer.Id, playerId = player.Id, gameRoomId = gameRoom.Id});
+            await _gameRoomServiceAsync.JoinRoom(gameRoom, player);
+            return StatusCode(200, new {playerId = player.Id, gameRoomId = gameRoom.Id});
         }
     }
 }
