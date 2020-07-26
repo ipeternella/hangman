@@ -25,6 +25,8 @@ namespace Hangman.Repository
 
         public async ValueTask<T> GetById(Guid id) => await _dbSet.FindAsync(id);  // FindAsync uses primary key -> 1 result
         
+        public async ValueTask<T> GetById(Guid[] ids) => await _dbSet.FindAsync(ids);  // for composite primary keys
+        
         public async ValueTask<T> Get(Expression<Func<T, bool>> filterPredicate) => await _dbSet.SingleOrDefaultAsync(filterPredicate); // 1 result or raise
 
         public async Task<IEnumerable<T>> All()
