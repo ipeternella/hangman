@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Threading.Tasks;
 using Hangman.Models;
 using Hangman.Repository.Interfaces;
@@ -39,13 +40,16 @@ namespace Hangman.Application
         public async Task<GameRoom?> GetById(Guid id)
         {
             var gameRoom = await _repository.GetById(id);
+            var gameRoomPlayers = await _repositoryGameRoomPlayer.Filter(grp => grp.GameRoom == gameRoom);
 
+            if (gameRoom != null) gameRoom.GameRoomPlayers = gameRoomPlayers.ToList();
             return gameRoom;
         }
 
         public async Task<IEnumerable<GameRoom>> GetAll()
         {
-            var gameRooms = await _repository.All();
+            var includedFieldsOnSerialization = new[] {"GameRoomPlayers"};
+            var gameRooms = await _repository.All(includedFieldsOnSerialization);
 
             return gameRooms;
         }
