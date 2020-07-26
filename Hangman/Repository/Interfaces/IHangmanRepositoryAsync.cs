@@ -11,6 +11,7 @@ namespace Hangman.Repository.Interfaces
         ValueTask<T?> GetById(Guid id);
         ValueTask<T?> Get(Expression<Func<T, bool>> filterPredicate);
         Task<IEnumerable<T>> All();
+        Task<IEnumerable<T>> All(IEnumerable<string> includes);
         ValueTask<IEnumerable<T>> Filter(Expression<Func<T, bool>>? filterPredicate = null);
         Task Save(T entity);
         Task Delete(T entity);

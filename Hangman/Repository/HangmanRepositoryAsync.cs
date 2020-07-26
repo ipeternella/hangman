@@ -24,12 +24,18 @@ namespace Hangman.Repository
         }
 
         public async ValueTask<T?> GetById(Guid id) => await _dbSet.FindAsync(id);  // FindAsync uses primary key -> 1 result
-
+        
         public async ValueTask<T?> Get(Expression<Func<T, bool>> filterPredicate) => await _dbSet.SingleOrDefaultAsync(filterPredicate); // 1 result or raise
 
         public async Task<IEnumerable<T>> All()
         {
             return await _dbSet.ToListAsync();
+        }
+        
+        public async Task<IEnumerable<T>> All(IEnumerable<string> includes)
+        {
+            // adds extra relationships
+            return await includes.Aggregate(_dbSet.AsQueryable(), (query, path) => query.Include(path)).ToListAsync();
         }
 
         public async ValueTask<IEnumerable<T>> Filter(Expression<Func<T, bool>>? filterPredicate = null)
