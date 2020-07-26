@@ -86,5 +86,20 @@ namespace Hangman.Application
             await _repositoryGameRoomPlayer.Save(gameRoomPlayer);
             return gameRoomPlayer;
         }
+        public async Task<GameRoomPlayer> LeaveRoom(GameRoomPlayer gameRoomPlayer)
+        {
+            _logger.LogInformation("Player {} is leaving room {}", gameRoomPlayer.PlayerId, gameRoomPlayer.GameRoomId);
+            gameRoomPlayer.IsInRoom = false;
+            
+            await _repositoryGameRoomPlayer.Update(gameRoomPlayer);
+            return gameRoomPlayer;
+        }
+
+        public async Task<GameRoomPlayer?> GetPlayerRoomData(GameRoom gameRoom, Player player)
+        {
+            var gameRoomData = await _repositoryGameRoomPlayer.Get(grp => grp.GameRoomId == gameRoom.Id && grp.PlayerId == player.Id);
+
+            return gameRoomData;
+        }
     }
 }
