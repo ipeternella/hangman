@@ -23,13 +23,11 @@ namespace Hangman.Controllers.V1
 
         [HttpGet]
         [Route("{id}")]
-        public async Task<ActionResult<Player>> GetById(string id)
+        public async Task<ActionResult<Player>> GetById(Guid id)
         {
             _logger.LogInformation("Calling playerService to get player with id: {id:l}", id);
-            var isValidGuid = Guid.TryParse(id, out var validGuid);
-            if (!isValidGuid) return BadRequest();
+            var player = await _playerServiceAsync.GetById(id);
             
-            var player = await _playerServiceAsync.GetById(validGuid);
             if (player != null) return Ok(player);
             
             return NotFound();
@@ -49,8 +47,8 @@ namespace Hangman.Controllers.V1
         public async Task<ActionResult<Player>> Create(NewPlayerData newPlayerData)
         {
             var player = await _playerServiceAsync.Create(newPlayerData);
+            _logger.LogInformation("New player has been created, name: {name}", player.Name);
             
-            _logger.LogInformation("New player has been created: {@player}", player);
             return CreatedAtAction(nameof(GetById), new {id = player.Id}, player);
         }
     }
