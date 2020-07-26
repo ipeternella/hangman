@@ -25,6 +25,15 @@ namespace Hangman.Repository
 
         public async ValueTask<T> GetById(Guid id) => await _dbSet.FindAsync(id);
         
+        public async ValueTask<T> Get(Expression<Func<T, bool>> filterPredicate)
+        {
+            var results = await _dbSet.Where(filterPredicate).ToListAsync();
+
+            if (results.Count > 1) throw new Exception("Get query returned more than one row!");
+            
+            return results.FirstOrDefault();
+        }
+        
         public async Task<IEnumerable<T>> All()
         {
             return await _dbSet.ToListAsync();
