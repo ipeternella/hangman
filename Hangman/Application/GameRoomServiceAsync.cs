@@ -10,12 +10,12 @@ namespace Hangman.Application
 {
     public class JoinRoomData
     {
-        [Required] public string PlayerName { get; set; }
+        [Required] public string PlayerName { get; set; } = default!;  // null-forgiving as this property is required
     }
 
     public class NewGameRoomData
     {
-        [Required] public string Name { get; set; }
+        [Required] public string Name { get; set; } = default!;
     }
 
     /**
@@ -36,7 +36,7 @@ namespace Hangman.Application
             _logger = logger;
         }
 
-        public async Task<GameRoom> GetById(Guid id)
+        public async Task<GameRoom?> GetById(Guid id)
         {
             var gameRoom = await _repository.GetById(id);
 

@@ -8,10 +8,10 @@ namespace Hangman.Repository.Interfaces
 {
     public interface IHangmanRepositoryAsync<T> where T : BaseEntity
     {
-        ValueTask<T> GetById(Guid id);
-        ValueTask<T> Get(Expression<Func<T, bool>> filterPredicate);
+        ValueTask<T?> GetById(Guid id);
+        ValueTask<T?> Get(Expression<Func<T, bool>> filterPredicate);
         Task<IEnumerable<T>> All();
-        ValueTask<IEnumerable<T>> Filter(Expression<Func<T, bool>> filterPredicate = null);
+        ValueTask<IEnumerable<T>> Filter(Expression<Func<T, bool>>? filterPredicate = null);
         Task Save(T entity);
         Task Delete(T entity);
         Task Update(T entity);

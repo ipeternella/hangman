@@ -6,22 +6,20 @@ namespace Hangman.Models
 {
     public class GameRoom : BaseEntity
     {
-        [Required]
-        [MaxLength(255)]
-        public string Name { get; set; }
+        [Required] [MaxLength(255)] public string Name { get; set; } = null!;
         
         // fk to join table for many-to-many relationships to access Users
-        public ICollection<GameRoomPlayer> GameRoomPlayers { get; set; }
+        public ICollection<GameRoomPlayer> GameRoomPlayers { get; set; } = null!;
     }
     
     public class Player : BaseEntity
     {
         [Required]
         [MaxLength(255)]
-        public string Name { get; set; }
-        
+        public string Name { get; set; } = null!;
+
         // fk to join table for many-to-many relationships to access GameRooms
-        public ICollection<GameRoomPlayer> GameRoomPlayers { get; set; }
+        public ICollection<GameRoomPlayer> GameRoomPlayers { get; set; } = null!;
     }
     
     public class GameRoomPlayer : BaseEntity
@@ -30,11 +28,11 @@ namespace Hangman.Models
         public Guid GameRoomId { get; set; }
         
         [Required]
-        public GameRoom GameRoom { get; set; }
-        
+        public GameRoom GameRoom { get; set; } = null!;
+
         [Required]
-        public Player Player { get; set; }
-        
+        public Player Player { get; set; } = null!;
+
         [Required]
         public Guid PlayerId { get; set; }
         

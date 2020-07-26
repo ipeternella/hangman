@@ -26,7 +26,7 @@ namespace Hangman.Repository
         
         public IEnumerable<T> All() => _dbSet.ToList();
 
-        public IEnumerable<T> Filter(Expression<Func<T, bool>> filterPredicate = null)
+        public IEnumerable<T> Filter(Expression<Func<T, bool>>? filterPredicate = null)
         {
             var query = _dbSet.AsQueryable();
             

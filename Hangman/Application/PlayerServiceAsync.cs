@@ -12,7 +12,7 @@ namespace Hangman.Application
     public class NewPlayerData
     {
         [Required]
-        public string Name { get; set; }
+        public string Name { get; set; } = null!;
     }
 
     public class PlayerServiceAsync : IPlayerServiceAsync
@@ -26,14 +26,14 @@ namespace Hangman.Application
             _logger = logger;
         }
         
-        public async Task<Player> GetById(Guid id)
+        public async Task<Player?> GetById(Guid id)
         {
             var player = await _repository.GetById(id);
             
             return player;
         }
         
-        public async Task<Player> GetByPlayerName(string playerName)
+        public async Task<Player?> GetByPlayerName(string playerName)
         {
             var possiblePlayers = await _repository.Filter(p => p.Name == playerName);
             var player = possiblePlayers.FirstOrDefault();  // might be null

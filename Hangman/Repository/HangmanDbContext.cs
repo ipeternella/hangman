@@ -17,9 +17,9 @@ namespace Hangman.Repository
         {
         }
 
-        public DbSet<GameRoom> GameRooms { get; set; }
-        public DbSet<Player> Players { get; set; }
-        public DbSet<GameRoomPlayer> GameRoomPlayers { get; set; }
+        public DbSet<GameRoom> GameRooms { get; set; } = null!;
+        public DbSet<Player> Players { get; set; } = null!;
+        public DbSet<GameRoomPlayer> GameRoomPlayers { get; set; } = null!;
 
         /**
          * Saves the context to the database. Adds CreatedAt and UpdatedAt.
