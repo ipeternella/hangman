@@ -15,7 +15,7 @@ namespace Tests.Hangman.Integration
 {
     public class GameRoomsTests : TestingCaseFixture<TestingStartUp>
     {
-        [Theory(DisplayName = "Should make a request to /api/v1/gameroom and get an HTTP 200")]
+        [Theory(DisplayName = "Should make a request to /api/v1/gameroom and get all 3 rooms")]
         [InlineData("/api/v1/gameroom")]
         public async Task TestShouldMakeRequestToGameRoomAndGetHttp200(string url)
         {
@@ -33,7 +33,7 @@ namespace Tests.Hangman.Integration
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         }
 
-        [Theory(DisplayName = "Should POST to /api/v1/gameroom and GET api/v1/gameroom/id to get an HTTP 200")]
+        [Theory(DisplayName = "Should create a new room and get it with its id")]
         [InlineData("/api/v1/gameroom")]
         public async Task TestShouldMakeRequestToGameRoomAndGetHttp200AfterCreation(string url)
         {
@@ -61,7 +61,7 @@ namespace Tests.Hangman.Integration
             Assert.Equal(createdGameRoomName, getResponseAsJson["name"]);
         }
 
-        [Theory(DisplayName = "Should make a player join a room and get an HTTP 200")]
+        [Theory(DisplayName = "Should make a player join a room successfully")]
         [InlineData("/api/v1/gameroom")]
         public async Task TestPlayerShouldJoinRoomWithoutBeingHost(string url)
         {
@@ -100,7 +100,7 @@ namespace Tests.Hangman.Integration
             Assert.True(gameRoomPlayer.IsInRoom);  // in room, but not host
         }
         
-        [Theory(DisplayName = "Should make a player rejoin a room and get an HTTP 200")]
+        [Theory(DisplayName = "Should make a player rejoin a room that he had left")]
         [InlineData("/api/v1/gameroom")]
         public async Task TestPlayerShouldRejoinRoom(string url)
         {
