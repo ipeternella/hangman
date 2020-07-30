@@ -87,6 +87,28 @@ namespace Hangman.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "GameRound",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    UpdatedAt = table.Column<DateTime>(nullable: true),
+                    Health = table.Column<int>(nullable: false),
+                    IsOver = table.Column<bool>(nullable: false),
+                    GuessWordId = table.Column<Guid>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GameRound", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_GameRound_GuessWord_GuessWordId",
+                        column: x => x.GuessWordId,
+                        principalTable: "GuessWord",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "GuessLetter",
                 columns: table => new
                 {
@@ -113,6 +135,12 @@ namespace Hangman.Migrations
                 column: "PlayerId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_GameRound_GuessWordId",
+                table: "GameRound",
+                column: "GuessWordId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_GuessLetter_GuessWordId",
                 table: "GuessLetter",
                 column: "GuessWordId");
@@ -127,6 +155,9 @@ namespace Hangman.Migrations
         {
             migrationBuilder.DropTable(
                 name: "GameRoomPlayers");
+
+            migrationBuilder.DropTable(
+                name: "GameRound");
 
             migrationBuilder.DropTable(
                 name: "GuessLetter");
