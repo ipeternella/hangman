@@ -18,6 +18,18 @@ namespace Hangman.Models
         public ICollection<GuessWord> GuessWords { get; set; } = null!;
     }
     
+    public class GameRound : BaseEntity
+    {
+        [Range(0, 6)] public int Health { get; set; } = 6;
+
+        public bool IsOver { get; set; } = false;
+
+        // 1-to-1 with GuessWord 
+        public GuessWord GuessWord { get; set; } = null!;
+        
+        public Guid GuessWordId { get; set; }
+    }
+    
     public class GuessWord : BaseEntity
     {
         [Required]
@@ -29,6 +41,8 @@ namespace Hangman.Models
         [Required] 
         [MaxLength(255)] 
         public string Word { get; set; } = null!;
+
+        public GameRound Round { get; set; } = null!;
 
         public ICollection<GuessLetter> GuessLetters { get; set; } = null!;
     }
