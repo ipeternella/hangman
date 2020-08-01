@@ -9,6 +9,12 @@ using Microsoft.Extensions.Logging;
 
 namespace Hangman.Application
 {
+    public class NewGuessLetterData
+    {
+        [Required] public string GuessLetter { get; set; } = default!; // null-forgiving as this property is required
+        [Required] public string PlayerName { get; set; } = default!; // null-forgiving as this property is required
+    }
+    
     public class NewGuessWordData
     {
         [Required] public string GuessWord { get; set; } = default!; // null-forgiving as this property is required
@@ -32,15 +38,22 @@ namespace Hangman.Application
     public class GameRoomServiceAsync : IGameRoomServiceAsync
     {
         private readonly IHangmanRepositoryAsync<GameRoomPlayer> _repositoryGameRoomPlayer;
+        private readonly IHangmanRepositoryAsync<GuessLetter> _repositoryGuessLetter;
+        private readonly IHangmanRepositoryAsync<GameRound> _repositoryGameRound;
         private readonly IHangmanRepositoryAsync<GuessWord> _repositoryGuessWord;
         private readonly IHangmanRepositoryAsync<GameRoom> _repository;
         private readonly ILogger<GameRoomServiceAsync> _logger;
 
         public GameRoomServiceAsync(IHangmanRepositoryAsync<GameRoom> repository,
             IHangmanRepositoryAsync<GameRoomPlayer> repositoryGameRoomPlayer,
-            IHangmanRepositoryAsync<GuessWord> repositoryGuessWord, ILogger<GameRoomServiceAsync> logger)
+            IHangmanRepositoryAsync<GuessLetter> repositoryGuessLetter,
+            IHangmanRepositoryAsync<GuessWord> repositoryGuessWord,
+            IHangmanRepositoryAsync<GameRound> repositoryGameRound,
+            ILogger<GameRoomServiceAsync> logger)
         {
             _repositoryGameRoomPlayer = repositoryGameRoomPlayer;
+            _repositoryGuessLetter = repositoryGuessLetter;
+            _repositoryGameRound = repositoryGameRound;
             _repositoryGuessWord = repositoryGuessWord;
             _repository = repository;
             _logger = logger;
@@ -56,6 +69,21 @@ namespace Hangman.Application
         }
 
         public async Task<IEnumerable<GameRoom>> GetAll()
+        {
+            var includedFieldsOnSerialization = new[] {"GameRoomPlayers", "GuessWords"};
+            var gameRooms = await _repository.All(includedFieldsOnSerialization);
+
+            return gameRooms;
+        }
+
+        public async Task<IEnumerable<GuessWord>> GetAllGuessedWords(Guid gameRoomId)
+        {
+            var guessWords = await _repositoryGuessWord.Filter(word => word.GameRoom.Id == gameRoomId);
+
+            return guessWords;
+        }
+
+        public async Task<IEnumerable<GameRoom>> GetAllGuessWords()
         {
             var includedFieldsOnSerialization = new[] {"GameRoomPlayers", "GuessWords"};
             var gameRooms = await _repository.All(includedFieldsOnSerialization);
@@ -128,6 +156,29 @@ namespace Hangman.Application
 
             await _repositoryGuessWord.Save(newGuessWord);
             return newGuessWord;
+        }
+
+        public async Task<GuessLetter> CreateGuessLetter(GameRound gameRound, string guessLetter)
+        {
+            var newGuessLetter = new GuessLetter()
+            {
+                GuessWord = gameRound.GuessWord,
+                GuessWordId = gameRound.GuessWordId,
+                Letter = guessLetter
+            };
+
+            await _repositoryGuessLetter.Save(newGuessLetter);
+            return newGuessLetter;
+        }
+        
+        public async Task<GuessLetter> UpdateGuessWordRoundState(GuessLetter guessLetter)
+        {
+            // 1.Update the game state: create new guess letter, check if word was found,
+            //   check if letter applies or player takes a hit, check if player is alive
+            // var gameRoom = guessWord.GameRoom;
+            var guessWord = guessLetter.GuessWord;
+            var gameRound = guessWord.Round;
+            var previouslyGuessLetters = guessWord.GuessLetters;
         }
     }
 }

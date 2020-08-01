@@ -53,6 +53,7 @@
     <Compile Remove="Migrations\20200719194613_FirstMigration.cs" />
     <Compile Remove="Migrations\20200719194613_FirstMigration.Designer.cs" />
     <Compile Remove="Migrations\Hangman\**" />
+    <Compile Remove="Business\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -60,6 +61,7 @@
     <EmbeddedResource Remove="Infrastructure\**" />
     <EmbeddedResource Remove="DTOs\**" />
     <EmbeddedResource Remove="Migrations\Hangman\**" />
+    <EmbeddedResource Remove="Business\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -67,6 +69,7 @@
     <None Remove="Infrastructure\**" />
     <None Remove="DTOs\**" />
     <None Remove="Migrations\Hangman\**" />
+    <None Remove="Business\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -75,6 +78,7 @@
     <Content Remove="DTOs\**" />
     <Content Remove="appsettings.Local.json" />
     <Content Remove="Migrations\Hangman\**" />
+    <Content Remove="Business\**" />
   </ItemGroup>
 
   <ItemGroup>

@@ -74,6 +74,35 @@ namespace Hangman.Migrations
                     b.ToTable("GameRoomPlayers");
                 });
 
+            modelBuilder.Entity("Hangman.Models.GameRound", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<Guid>("GuessWordId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Health")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("IsOver")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GuessWordId")
+                        .IsUnique();
+
+                    b.ToTable("GameRound");
+                });
+
             modelBuilder.Entity("Hangman.Models.GuessLetter", b =>
                 {
                     b.Property<Guid>("Id")
@@ -161,6 +190,15 @@ namespace Hangman.Migrations
                     b.HasOne("Hangman.Models.Player", "Player")
                         .WithMany("GameRoomPlayers")
                         .HasForeignKey("PlayerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Hangman.Models.GameRound", b =>
+                {
+                    b.HasOne("Hangman.Models.GuessWord", "GuessWord")
+                        .WithOne("Round")
+                        .HasForeignKey("Hangman.Models.GameRound", "GuessWordId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
