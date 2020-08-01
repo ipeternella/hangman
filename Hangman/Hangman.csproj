@@ -53,7 +53,6 @@
     <Compile Remove="Migrations\20200719194613_FirstMigration.cs" />
     <Compile Remove="Migrations\20200719194613_FirstMigration.Designer.cs" />
     <Compile Remove="Migrations\Hangman\**" />
-    <Compile Remove="Business\**" />
   </ItemGroup>
 
   <ItemGroup>
