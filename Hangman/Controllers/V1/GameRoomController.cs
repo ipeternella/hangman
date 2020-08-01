@@ -150,7 +150,7 @@ namespace Hangman.Controllers.V1
         {
             var guessLetterString = newGuessLetterData.GuessLetter;
             var playerName = newGuessLetterData.PlayerName;
-            _logger.LogInformation("Player {:l} is guessing the letter {:l} for the word {:l} in room {}:l", playerName, guessLetter, guessWordId, gameRoomId);
+            _logger.LogInformation("Player {:l} is guessing the letter {:l} for the word {:l} in room {}:l", playerName, guessLetterString, guessWordId, gameRoomId);
         
             var gameRoom = await _gameRoomServiceAsync.GetById(gameRoomId);
             if (gameRoom == null) return BadRequest(new {message = "Game Room was not found!"});
@@ -176,9 +176,11 @@ namespace Hangman.Controllers.V1
             if (alreadyGuessedLetter != null) return BadRequest(new {message = "This letter has already been guessed!"});
 
             var guessLetter = await _gameRoomServiceAsync.CreateGuessLetter(gameRound, guessLetterString);
-            await _gameRoomServiceAsync.UpdateGuessWordRoundState(guessLetter);
             
-            return StatusCode(201, new {});  // 
+            // TODO: update game state
+            // await _gameRoomServiceAsync.UpdateGuessWordRoundState(guessLetter); 
+            
+            return StatusCode(201, new {});
         }
     }
 }

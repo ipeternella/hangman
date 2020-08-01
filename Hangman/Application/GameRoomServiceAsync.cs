@@ -171,14 +171,14 @@ namespace Hangman.Application
             return newGuessLetter;
         }
         
-        public async Task<GuessLetter> UpdateGuessWordRoundState(GuessLetter guessLetter)
-        {
-            // 1.Update the game state: create new guess letter, check if word was found,
-            //   check if letter applies or player takes a hit, check if player is alive
-            // var gameRoom = guessWord.GameRoom;
-            var guessWord = guessLetter.GuessWord;
-            var gameRound = guessWord.Round;
-            var previouslyGuessLetters = guessWord.GuessLetters;
-        }
+        // public async Task<GuessLetter> UpdateGuessWordRoundState(GuessLetter guessLetter)
+        // {
+        //     // 1.Update the game state: create new guess letter, check if word was found,
+        //     //   check if letter applies or player takes a hit, check if player is alive
+        //     // var gameRoom = guessWord.GameRoom;
+        //     var guessWord = guessLetter.GuessWord;
+        //     var gameRound = guessWord.Round;
+        //     var previouslyGuessLetters = guessWord.GuessLetters;
+        // }
     }
 }
