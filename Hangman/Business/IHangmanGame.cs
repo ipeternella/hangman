@@ -1,12 +1,14 @@
 using System;
+using System.Collections.Generic;
 
 namespace Hangman.Business
 {
-    public interface IHangman
+    public interface IHangmanGame
     {
         // utility
         public bool IsGuessedLetterInGuessWord(string guessLetter, string guessWord);
-        // public string[] GetFilledLetters();  // _ o _ f (wolf) --> [*, o, l, f];
+
+        public IEnumerable<string> GetGuessWordSoFar(IEnumerable<string> guessedLetters, string guessWord);
         // public GameRound FinishGameRound();
         //
         // // when player misses a guess 

@@ -28,6 +28,7 @@
 
     <ItemGroup>
       <Compile Remove="Hangman\Utilities\**" />
+      <Compile Remove="Hangman\Unit\UnitTest1.cs" />
     </ItemGroup>
 
     <ItemGroup>
