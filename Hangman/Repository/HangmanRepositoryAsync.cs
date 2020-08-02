@@ -27,7 +27,10 @@ namespace Hangman.Repository
         
         public async ValueTask<T?> GetById(Guid id, IEnumerable<string> includes)
         {
-            // adds extra relationships
+            var entityExists = await GetById(id) != null;
+            if (!entityExists) return null;
+            
+            // adds extra relationships (breaks) if entitiy is not found by id
             return await includes.Aggregate(_dbSet.Where(entity => entity.Id == id).AsQueryable(), (query, path) => query.Include(path)).FirstAsync();
         }
         
