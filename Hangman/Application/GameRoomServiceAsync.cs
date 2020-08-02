@@ -18,13 +18,13 @@ namespace Hangman.Application
         public bool IsOver;
         public int PlayerHealth;
     }
-    
+
     public class NewGuessLetterData
     {
         [Required] public string GuessLetter { get; set; } = default!; // null-forgiving as this property is required
         [Required] public string PlayerName { get; set; } = default!; // null-forgiving as this property is required
     }
-    
+
     public class NewGuessWordData
     {
         [Required] public string GuessWord { get; set; } = default!; // null-forgiving as this property is required
@@ -76,7 +76,7 @@ namespace Hangman.Application
         {
             var gameRoom = await _repository.GetById(id);
             var includedFieldsOnSerialization = new[] {"GameRoomPlayers", "GuessWords"};
-            
+
             await _repository.GetById(id, includedFieldsOnSerialization);
             return gameRoom;
         }
@@ -95,7 +95,7 @@ namespace Hangman.Application
 
             return guessWords;
         }
-        
+
         public async Task<GuessWord?> GetGuessedWord(Guid guessWordId)
         {
             var includedFieldsOnSerialization = new[] {"GameRoom", "Round", "GuessLetters"};
@@ -166,7 +166,7 @@ namespace Hangman.Application
                 GameRoomId = gameRoom.Id,
                 Word = guessWord
             };
-            
+
             var gameRound = new GameRound
             {
                 GuessWord = newGuessWord,
@@ -196,10 +196,11 @@ namespace Hangman.Application
         {
             _logger.LogInformation("Persisting new player's move...");
             await CreateGuessLetter(guessWord, newGuessLetterString);
-            
+
             var gameRound = guessWord.Round;
-            var allGuessLetters = guessWord.GuessLetters.Select(letter => letter.Letter);  // with new guess letter already
-            var updatedGameState =  new GameStateData()
+            var allGuessLetters =
+                guessWord.GuessLetters.Select(letter => letter.Letter); // with new guess letter already
+            var updatedGameState = new GameStateData()
             {
                 GuessWord = null,
                 IsOver = false,
@@ -207,21 +208,20 @@ namespace Hangman.Application
                 GuessWordSoFar = _gameLogic.GetGuessWordSoFar(allGuessLetters, guessWord.Word),
                 GuessedLetters = allGuessLetters,
             };
-            
+
             if (_gameLogic.IsGuessedLetterInGuessWord(newGuessLetterString, guessWord.Word))
             {
-                
                 _logger.LogInformation("Player guessed a right letter. Checking if turn is over...");
                 if (_gameLogic.HasPlayerHasDiscoveredGuessWord(allGuessLetters, guessWord.Word))
                 {
                     _logger.LogInformation("Guess word {:l} has been found! Turn is over...", guessWord.Word);
                     gameRound = _gameLogic.FinishGameRound(gameRound);
                     await _repositoryGameRound.Update(gameRound);
-                    
+
                     _logger.LogInformation("Setting final game state for return...");
                     updatedGameState.IsOver = true;
                     updatedGameState.GuessWord = guessWord.Word;
-                }                
+                }
             }
             else
             {
@@ -232,17 +232,17 @@ namespace Hangman.Application
                 {
                     _logger.LogInformation("Player has been hung and is dead! Turn is over...");
                     gameRound = _gameLogic.FinishGameRound(gameRound);
-                    
+
                     _logger.LogInformation("Setting final game state for return...");
                     updatedGameState.IsOver = true;
                     updatedGameState.GuessWord = guessWord.Word;
                 }
-                
+
                 await _repositoryGameRound.Update(gameRound);
             }
 
             updatedGameState.PlayerHealth = gameRound.Health;
-            
+
             _logger.LogInformation("Returning updated game state data...");
             return updatedGameState;
         }
