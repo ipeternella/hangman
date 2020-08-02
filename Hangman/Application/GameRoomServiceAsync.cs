@@ -3,12 +3,22 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using Hangman.Business;
 using Hangman.Models;
 using Hangman.Repository.Interfaces;
 using Microsoft.Extensions.Logging;
 
 namespace Hangman.Application
 {
+    public class GameStateData
+    {
+        public string? GuessWord;
+        public IEnumerable<string> GuessWordSoFar = null!;
+        public IEnumerable<string> GuessedLetters = null!;
+        public bool IsOver;
+        public int PlayerHealth;
+    }
+    
     public class NewGuessLetterData
     {
         [Required] public string GuessLetter { get; set; } = default!; // null-forgiving as this property is required
@@ -43,19 +53,22 @@ namespace Hangman.Application
         private readonly IHangmanRepositoryAsync<GuessWord> _repositoryGuessWord;
         private readonly IHangmanRepositoryAsync<GameRoom> _repository;
         private readonly ILogger<GameRoomServiceAsync> _logger;
+        private readonly IHangmanGame _gameLogic;
 
         public GameRoomServiceAsync(IHangmanRepositoryAsync<GameRoom> repository,
             IHangmanRepositoryAsync<GameRoomPlayer> repositoryGameRoomPlayer,
             IHangmanRepositoryAsync<GuessLetter> repositoryGuessLetter,
             IHangmanRepositoryAsync<GuessWord> repositoryGuessWord,
             IHangmanRepositoryAsync<GameRound> repositoryGameRound,
-            ILogger<GameRoomServiceAsync> logger)
+            ILogger<GameRoomServiceAsync> logger,
+            IHangmanGame gameLogic)
         {
             _repositoryGameRoomPlayer = repositoryGameRoomPlayer;
             _repositoryGuessLetter = repositoryGuessLetter;
             _repositoryGameRound = repositoryGameRound;
             _repositoryGuessWord = repositoryGuessWord;
             _repository = repository;
+            _gameLogic = gameLogic;
             _logger = logger;
         }
 
@@ -170,15 +183,69 @@ namespace Hangman.Application
             await _repositoryGuessLetter.Save(newGuessLetter);
             return newGuessLetter;
         }
-        
-        // public async Task<GuessLetter> UpdateGuessWordRoundState(GuessLetter guessLetter)
-        // {
-        //     // 1.Update the game state: create new guess letter, check if word was found,
-        //     //   check if letter applies or player takes a hit, check if player is alive
-        //     // var gameRoom = guessWord.GameRoom;
-        //     var guessWord = guessLetter.GuessWord;
-        //     var gameRound = guessWord.Round;
-        //     var previouslyGuessLetters = guessWord.GuessLetters;
-        // }
+
+        public async Task<GameStateData> UpdateGuessWordRoundState(GuessLetter newGuessLetter)
+        {
+            var guessWord = newGuessLetter.GuessWord;
+            var gameRound = guessWord.Round;
+            var previouslyGuessLetters = guessWord.GuessLetters;
+            var allGuessLetters = previouslyGuessLetters.Append(newGuessLetter);
+            var allGuessLettersString = allGuessLetters.Select(letter => letter.Letter);
+            var updatedGameState =  new GameStateData()
+            {
+                GuessWord = null,
+                IsOver = false,
+                PlayerHealth = gameRound.Health,
+                GuessWordSoFar = _gameLogic.GetGuessWordSoFar(allGuessLettersString, guessWord.Word),
+                GuessedLetters = allGuessLettersString,
+            };
+
+            _logger.LogInformation("Calling game logic to update game state...");
+            
+            if (_gameLogic.IsGuessedLetterInGuessWord(newGuessLetter.Letter, guessWord.Word))
+            {
+                
+                _logger.LogInformation("Player guessed a right letter. Persisting player's move...");
+                await _repositoryGuessLetter.Save(newGuessLetter);
+                
+                _logger.LogInformation("Checking if turn is over...");
+                
+                if (_gameLogic.HasPlayerHasDiscoveredGuessWord(allGuessLettersString, guessWord.Word))
+                {
+                    _logger.LogInformation("Guess word {:l} has been found! Turn is over...", guessWord.Word);
+                    gameRound = _gameLogic.FinishGameRound(gameRound);
+                    await _repositoryGameRound.Save(gameRound);
+                    
+                    _logger.LogInformation("Setting final game state for return...");
+                    updatedGameState.IsOver = true;
+                    updatedGameState.GuessWord = guessWord.Word;
+                }                
+            }
+            else
+            {
+                _logger.LogInformation("Player has guessed a wrong letter. Punishing him with a health hit...");
+                gameRound = _gameLogic.ReducePlayerHealth(gameRound);
+
+                _logger.LogInformation("Persisting player's move...");
+                await _repositoryGuessLetter.Save(newGuessLetter);
+                
+                if (_gameLogic.HasPlayerBeenHung(gameRound))
+                {
+                    _logger.LogInformation("Player has been hung and is dead! Turn is over...");
+                    gameRound = _gameLogic.FinishGameRound(gameRound);
+                    
+                    await _repositoryGameRound.Save(gameRound);
+                    
+                    _logger.LogInformation("Setting final game state for return...");
+                    updatedGameState.IsOver = true;
+                    updatedGameState.GuessWord = guessWord.Word;
+                }
+            }
+
+            updatedGameState.PlayerHealth = gameRound.Health;
+            
+            _logger.LogInformation("Returning updated game state data...");
+            return updatedGameState;
+        }
     }
 }
