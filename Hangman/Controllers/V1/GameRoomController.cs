@@ -139,12 +139,10 @@ namespace Hangman.Controllers.V1
             _logger.LogInformation("Getting game state for {guessWordId}:l} in {gameRoomId:l}", guessWordId,
                 gameRoomId);
 
-            var gameRoom = await _gameRoomServiceAsync.GetById(gameRoomId);
-            if (gameRoom == null) return BadRequest(new {message = "Game Room was not found!"});
-
             var guessWord = await _gameRoomServiceAsync.GetGuessedWord(guessWordId);
-            if (guessWord == null) return BadRequest(new {message = "Guess Word was not found in such room!"});
-
+            if (guessWord == null || guessWord.GameRoom.Id != gameRoomId) 
+                return BadRequest(new {message = "Guess Word was not found in such room!"});
+            
             var gameRound = guessWord.Round;
             var guessWordIfRoundIsOver = gameRound.IsOver ? guessWord.Word : null;
 
@@ -170,8 +168,12 @@ namespace Hangman.Controllers.V1
                 "Player {playerName:l} is guessing the letter {guessLetterString:l} for the word {guessWordId:l} in room {gameRoomId:l}",
                 playerName,
                 guessLetterString, guessWordId, gameRoomId);
+            
+            var guessWord = await _gameRoomServiceAsync.GetGuessedWord(guessWordId);
+            if (guessWord == null || guessWord.GameRoom.Id != gameRoomId) 
+                return BadRequest(new {message = "Guess Word was not found in such room!"});
 
-            var gameRoom = await _gameRoomServiceAsync.GetById(gameRoomId);
+            var gameRoom = await _gameRoomServiceAsync.GetById(gameRoomId);  // gameRoomId obligatory matches guess word rooms' Id
             if (gameRoom == null) return BadRequest(new {message = "Game Room was not found!"});
 
             _logger.LogInformation("Room was found. Checking if player is valid...");
@@ -182,9 +184,6 @@ namespace Hangman.Controllers.V1
             var gameRoomPlayer = await _gameRoomServiceAsync.GetPlayerRoomData(gameRoom, player);
             if (gameRoomPlayer == null || !gameRoomPlayer.IsInRoom)
                 return BadRequest(new {message = "Player is not in the room!"}); // TODO: HOST cannot make guesses!
-
-            var guessWord = await _gameRoomServiceAsync.GetGuessedWord(guessWordId);
-            if (guessWord == null) return BadRequest(new {message = "Guess Word was not found in such room!"});
 
             var gameRound = guessWord.Round;
             if (gameRound.IsOver) return BadRequest(new {message = "The round is over for this guess word!"});
