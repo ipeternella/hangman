@@ -14,22 +14,14 @@ namespace Hangman.Business
 
         public IEnumerable<string> GetGuessWordSoFar(IEnumerable<string> guessedLetters, string guessWord)
         {
-            // ["*", "O", "L", "F"], guessWord: "wolf", guessLetters: ["l", "f", "o"]
+            guessedLetters ??= new List<string>() { };
             
-            // naive solution
-            // for each letter, check if its within guessed letters => if not, mark it with a "*"
-            var guessedWordSoFar = new List<string>();
             var guessedLettersSoFar = string.Join("", guessedLetters.ToArray());
 
-            foreach (var guessWordChar in guessWord)
-            {
-                // if guessed letters appears in the guess word, then it's added to final result, otherwise a "*" is added
-                guessedWordSoFar.Add(guessedLettersSoFar.Contains(guessWordChar.ToString()) ? guessWordChar.ToString() : "*");
-            }
-
-            return guessedWordSoFar;
+            return guessWord.Select(guessWordChar =>
+                guessedLettersSoFar.Contains(guessWordChar.ToString()) ? guessWordChar.ToString() : "*").ToList();
         }
-        
+
         // public GameRound FinishGameRound();
         //
         // // when player misses a guess 

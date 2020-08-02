@@ -59,6 +59,35 @@ namespace Tests.Hangman.Unit.Business
             // assert
             var expectedGuessWordSoFar = new List<string>() {"i", "g", "o", "o", "o", "r"};
             Assert.Equal(expectedGuessWordSoFar, guessWordSoFar);
-        } 
+        }
+        
+        [Fact(DisplayName = "Should display no guessed letters of the guess word")]
+        public void TestShouldDisplayNoGuessedLettersOfGuessWord()
+        {
+            // arrange
+            var guessedLetters = new List<string>() {};
+            const string guessWord = "igooor";
+
+            // act
+            var guessWordSoFar = _gameLogic.GetGuessWordSoFar(guessedLetters, guessWord);
+            
+            // assert
+            var expectedGuessWordSoFar = new List<string>() {"*", "*", "*", "*", "*", "*"};
+            Assert.Equal(expectedGuessWordSoFar, guessWordSoFar);
+        }
+        
+        [Fact(DisplayName = "Should display no guessed letters of the guess word if null is passed")]
+        public void TestShouldDisplayNoGuessedLettersOfGuessWordWhenNullIsPassed()
+        {
+            // arrange
+            const string guessWord = "igooor";
+
+            // act
+            var guessWordSoFar = _gameLogic.GetGuessWordSoFar(null, guessWord);
+            
+            // assert
+            var expectedGuessWordSoFar = new List<string>() {"*", "*", "*", "*", "*", "*"};
+            Assert.Equal(expectedGuessWordSoFar, guessWordSoFar);
+        }
     }
 }
