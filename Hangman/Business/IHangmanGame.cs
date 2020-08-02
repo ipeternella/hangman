@@ -16,6 +16,6 @@ namespace Hangman.Business
         // public bool HasPlayerBeenHung(GameRound gameRound);
         //
         // // when player guesses a letter
-        // public bool HasPlayerHasDiscoveredGuessWord();
+         public bool HasPlayerHasDiscoveredGuessWord(IEnumerable<string> guessedLetters, string guessWord);
     }
 }

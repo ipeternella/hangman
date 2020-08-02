@@ -29,6 +29,10 @@ namespace Hangman.Business
         // public bool HasPlayerBeenHung(GameRound gameRound);
         //
         // // when player guesses a letter
-        // public bool HasPlayerHasDiscoveredGuessWord();
+        public bool HasPlayerHasDiscoveredGuessWord(IEnumerable<string> guessedLetters, string guessWord)
+        {
+            var guessWordSoFar = GetGuessWordSoFar(guessedLetters, guessWord);
+            return guessWordSoFar.All(letter => letter != "*");  // no more "*" (not found letters)
+        }
     }
 }
