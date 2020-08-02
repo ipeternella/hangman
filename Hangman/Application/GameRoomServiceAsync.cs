@@ -75,9 +75,9 @@ namespace Hangman.Application
         public async Task<GameRoom?> GetById(Guid id)
         {
             var gameRoom = await _repository.GetById(id);
-            var gameRoomPlayers = await _repositoryGameRoomPlayer.Filter(grp => grp.GameRoom == gameRoom);
-
-            if (gameRoom != null) gameRoom.GameRoomPlayers = gameRoomPlayers.ToList();
+            var includedFieldsOnSerialization = new[] {"GameRoomPlayers", "GuessWords"};
+            
+            await _repository.GetById(id, includedFieldsOnSerialization);
             return gameRoom;
         }
 
@@ -166,8 +166,16 @@ namespace Hangman.Application
                 GameRoomId = gameRoom.Id,
                 Word = guessWord
             };
+            
+            var gameRound = new GameRound
+            {
+                GuessWord = newGuessWord,
+                GuessWordId = newGuessWord.Id
+            };
 
+            newGuessWord.Round = gameRound; // 1-to-1 relationship must be also created!
             await _repositoryGuessWord.Save(newGuessWord);
+
             return newGuessWord;
         }
 
