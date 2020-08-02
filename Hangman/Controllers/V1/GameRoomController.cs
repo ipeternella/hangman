@@ -158,8 +158,7 @@ namespace Hangman.Controllers.V1
             var gameRoomPlayer = await _gameRoomServiceAsync.GetPlayerRoomData(gameRoom, player);
             if (gameRoomPlayer == null || !gameRoomPlayer.IsInRoom) return BadRequest(new {message = "Player is not in the room!"});  // TODO: HOST cannot make guesses!
             
-            // get guess word from guess room
-            GuessWord? guessWord = gameRoom.GuessWords.FirstOrDefault(word => word.Id == guessWordId);
+            var guessWord = await _gameRoomServiceAsync.GetGuessedWord(guessWordId);
             if (guessWord == null) return BadRequest(new {message = "Guess Word was not found in such room!"});
             
             // invoke service for turns
@@ -169,9 +168,8 @@ namespace Hangman.Controllers.V1
             // update state with new guess Letter (win, lose, or keep going?)
             var alreadyGuessedLetter = guessWord.GuessLetters.FirstOrDefault(letter => letter.Letter == guessLetterString);
             if (alreadyGuessedLetter != null) return BadRequest(new {message = "This letter has already been guessed!"});
-
-            var guessLetter = await _gameRoomServiceAsync.CreateGuessLetter(gameRound, guessLetterString);
-            var updatedGameRoundState = await _gameRoomServiceAsync.UpdateGameRoundState(guessLetter); 
+            
+            var updatedGameRoundState = await _gameRoomServiceAsync.UpdateGameRoundState(guessWord, guessLetterString); 
             
             return StatusCode(201, updatedGameRoundState);
         }

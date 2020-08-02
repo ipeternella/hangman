@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Hangman.Models;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Hangman.Application
 {
@@ -11,12 +10,13 @@ namespace Hangman.Application
         public Task<GameRoom?> GetById(Guid id);
         public Task<IEnumerable<GameRoom>> GetAll();
         public Task<IEnumerable<GuessWord>> GetAllGuessedWords(Guid gameRoomId);
+        public Task<GuessWord?> GetGuessedWord(Guid guessWordId);
         public Task<GameRoom> Create(NewGameRoomData newGameRoomData);
         public Task<GuessWord> CreateGuessWord(GameRoom gameRoom, string guessWord);
         public Task<GameRoomPlayer> JoinRoom(GameRoom gameRoom, Player player, bool isHost = false);
         public Task<GameRoomPlayer> LeaveRoom(GameRoomPlayer gameRoomPlayer);
         public Task<GameRoomPlayer?> GetPlayerRoomData(GameRoom gameRoom, Player player);
-        public Task<GuessLetter> CreateGuessLetter(GameRound gameRound, string guessLetter);
-        public Task<GameStateData> UpdateGameRoundState(GuessLetter guessLetter);
+        public Task<GuessLetter> CreateGuessLetter(GuessWord guessWord, string guessLetter);
+        public Task<GameStateData> UpdateGameRoundState(GuessWord guessWord, string guessLetterString);
     }
 }
