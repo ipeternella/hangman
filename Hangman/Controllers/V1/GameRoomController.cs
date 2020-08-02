@@ -27,11 +27,11 @@ namespace Hangman.Controllers.V1
         }
 
         [HttpGet]
-        [Route("{id}")]
-        public async Task<ActionResult<GameRoom>> GetById(Guid id)
+        [Route("{gameRoodId}")]
+        public async Task<ActionResult<GameRoom>> GetById(Guid gameRoodId)
         {
-            _logger.LogInformation("Calling gameRoomService to get room with id: {id:l}", id);
-            var gameRoom = await _gameRoomServiceAsync.GetById(id);
+            _logger.LogInformation("Calling gameRoomService to get room with id: {id:l}", gameRoodId);
+            var gameRoom = await _gameRoomServiceAsync.GetById(gameRoodId);
             if (gameRoom != null) return Ok(gameRoom);
 
             return NotFound();
@@ -43,7 +43,7 @@ namespace Hangman.Controllers.V1
             _logger.LogInformation("Calling gameRoomService to get all rooms...");
             var gameRooms = await _gameRoomServiceAsync.GetAll();
 
-            _logger.LogInformation($"Returning all gameRooms: {@gameRooms}", gameRooms);
+            _logger.LogInformation("Returning all gameRooms...");
             return Ok(gameRooms);
         }
 
@@ -53,17 +53,17 @@ namespace Hangman.Controllers.V1
             var gameRoom = await _gameRoomServiceAsync.Create(newGameRoomData);
 
             _logger.LogInformation("New room has been created: {@gameRoom}", gameRoom);
-            return CreatedAtAction(nameof(GetById), new {id = gameRoom.Id}, gameRoom);
+            return CreatedAtAction(nameof(GetById), new {gameRoom.Id}, gameRoom);
         }
 
         [HttpPost]
-        [Route("{id}/join")]
-        public async Task<ActionResult<GameRoom>> JoinRoom(Guid id, JoinRoomData joinRoomData)
+        [Route("{gameRoodId}/join")]
+        public async Task<ActionResult<GameRoom>> JoinRoom(Guid gameRoodId, JoinRoomData joinRoomData)
         {
             var playerName = joinRoomData.PlayerName;
-            _logger.LogInformation("Player {playerName:l} wants to join room {id:l}", playerName, id);
+            _logger.LogInformation("Player {playerName:l} wants to join room {id:l}", playerName, gameRoodId);
 
-            var gameRoom = await _gameRoomServiceAsync.GetById(id);
+            var gameRoom = await _gameRoomServiceAsync.GetById(gameRoodId);
             if (gameRoom == null) return BadRequest(new {message = "Game Room was not found!"});
 
             _logger.LogInformation("Room was found. Checking if player is valid...");
@@ -76,13 +76,13 @@ namespace Hangman.Controllers.V1
         }
 
         [HttpPost]
-        [Route("{id}/leave")]
-        public async Task<ActionResult<GameRoom>> LeaveRoom(Guid id, JoinRoomData joinRoomData)
+        [Route("{gameRoodId}/leave")]
+        public async Task<ActionResult<GameRoom>> LeaveRoom(Guid gameRoodId, JoinRoomData joinRoomData)
         {
             var playerName = joinRoomData.PlayerName;
-            _logger.LogInformation("Player {playerName:l} wants to leave room {id:l}", playerName, id);
+            _logger.LogInformation("Player {playerName:l} wants to leave room {id:l}", playerName, gameRoodId);
 
-            var gameRoom = await _gameRoomServiceAsync.GetById(id);
+            var gameRoom = await _gameRoomServiceAsync.GetById(gameRoodId);
             if (gameRoom == null) return BadRequest(new {message = "Game Room was not found!"});
 
             _logger.LogInformation("Room was found. Checking if player is valid...");
@@ -109,14 +109,14 @@ namespace Hangman.Controllers.V1
         }
 
         [HttpPost]
-        [Route("{id}/guessword")]
-        public async Task<ActionResult<GuessWord>> CreateGuessWordInRoom(Guid id, NewGuessWordData newGuessWordData)
+        [Route("{gameRoomId}/guessword")]
+        public async Task<ActionResult<GuessWord>> CreateGuessWordInRoom(Guid gameRoomId, NewGuessWordData newGuessWordData)
         {
             var newGuessWord = newGuessWordData.GuessWord;
             var playerName = newGuessWordData.PlayerName;
             _logger.LogInformation("Player {playerName:l} wants to leave room {id:l}", playerName, newGuessWord);
 
-            var gameRoom = await _gameRoomServiceAsync.GetById(id);
+            var gameRoom = await _gameRoomServiceAsync.GetById(gameRoomId);
             if (gameRoom == null) return BadRequest(new {message = "Game Room was not found!"});
 
             _logger.LogInformation("Room was found. Checking if player is valid...");
@@ -165,6 +165,7 @@ namespace Hangman.Controllers.V1
         {
             var guessLetterString = newGuessLetterData.GuessLetter;
             var playerName = newGuessLetterData.PlayerName;
+            
             _logger.LogInformation(
                 "Player {playerName:l} is guessing the letter {guessLetterString:l} for the word {guessWordId:l} in room {gameRoomId:l}",
                 playerName,
