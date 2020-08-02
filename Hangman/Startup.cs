@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Hangman.Application;
+using Hangman.Business;
 using Hangman.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -45,6 +46,7 @@ namespace Hangman
                 .AddScoped(typeof(IHangmanRepositoryAsync<>), typeof(HangmanRepositoryAsync<>)) // generic repository
                 .AddScoped<IGameRoomServiceAsync, GameRoomServiceAsync>()
                 .AddScoped<IPlayerServiceAsync, PlayerServiceAsync>()
+                .AddScoped<IHangmanGame, HangmanGame>()
                 .AddControllers()
                 .AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);  // ignore loops when serializing JSON
         }
