@@ -27,11 +27,11 @@ namespace Hangman.Controllers.V1
         }
 
         [HttpGet]
-        [Route("{gameRoodId}")]
-        public async Task<ActionResult<GameRoom>> GetById(Guid gameRoodId)
+        [Route("{gameRoomId}")]
+        public async Task<ActionResult<GameRoom>> GetById(Guid gameRoomId)
         {
-            _logger.LogInformation("Calling gameRoomService to get room with id: {id:l}", gameRoodId);
-            var gameRoom = await _gameRoomServiceAsync.GetById(gameRoodId);
+            _logger.LogInformation("Calling gameRoomService to get room with id: {id:l}", gameRoomId);
+            var gameRoom = await _gameRoomServiceAsync.GetById(gameRoomId);
             if (gameRoom != null) return Ok(gameRoom);
 
             return NotFound();
@@ -52,18 +52,18 @@ namespace Hangman.Controllers.V1
         {
             var gameRoom = await _gameRoomServiceAsync.Create(newGameRoomData);
 
-            _logger.LogInformation("New room has been created: {@gameRoom}", gameRoom);
-            return CreatedAtAction(nameof(GetById), new {gameRoom.Id}, gameRoom);
+            _logger.LogInformation("New room has been created: {gameRoom}", gameRoom);
+            return CreatedAtAction(nameof(GetById), new {gameRoomId = gameRoom.Id}, gameRoom);
         }
 
         [HttpPost]
-        [Route("{gameRoodId}/join")]
-        public async Task<ActionResult<GameRoom>> JoinRoom(Guid gameRoodId, JoinRoomData joinRoomData)
+        [Route("{gameRoomId}/join")]
+        public async Task<ActionResult<GameRoom>> JoinRoom(Guid gameRoomId, JoinRoomData joinRoomData)
         {
             var playerName = joinRoomData.PlayerName;
-            _logger.LogInformation("Player {playerName:l} wants to join room {id:l}", playerName, gameRoodId);
+            _logger.LogInformation("Player {playerName:l} wants to join room {id:l}", playerName, gameRoomId);
 
-            var gameRoom = await _gameRoomServiceAsync.GetById(gameRoodId);
+            var gameRoom = await _gameRoomServiceAsync.GetById(gameRoomId);
             if (gameRoom == null) return BadRequest(new {message = "Game Room was not found!"});
 
             _logger.LogInformation("Room was found. Checking if player is valid...");
@@ -76,13 +76,13 @@ namespace Hangman.Controllers.V1
         }
 
         [HttpPost]
-        [Route("{gameRoodId}/leave")]
-        public async Task<ActionResult<GameRoom>> LeaveRoom(Guid gameRoodId, JoinRoomData joinRoomData)
+        [Route("{gameRoomId}/leave")]
+        public async Task<ActionResult<GameRoom>> LeaveRoom(Guid gameRoomId, JoinRoomData joinRoomData)
         {
             var playerName = joinRoomData.PlayerName;
-            _logger.LogInformation("Player {playerName:l} wants to leave room {id:l}", playerName, gameRoodId);
+            _logger.LogInformation("Player {playerName:l} wants to leave room {id:l}", playerName, gameRoomId);
 
-            var gameRoom = await _gameRoomServiceAsync.GetById(gameRoodId);
+            var gameRoom = await _gameRoomServiceAsync.GetById(gameRoomId);
             if (gameRoom == null) return BadRequest(new {message = "Game Room was not found!"});
 
             _logger.LogInformation("Room was found. Checking if player is valid...");

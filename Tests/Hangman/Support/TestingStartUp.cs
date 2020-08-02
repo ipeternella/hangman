@@ -1,6 +1,7 @@
 using System.Linq;
 using Hangman;
 using Hangman.Application;
+using Hangman.Business;
 using Hangman.Repository;
 using Hangman.Repository.Interfaces;
 using Microsoft.AspNetCore.Builder;
@@ -37,6 +38,7 @@ namespace Tests.Hangman.Support
                 .AddScoped(typeof(IHangmanRepositoryAsync<>), typeof(HangmanRepositoryAsync<>)) // generic repository
                 .AddScoped<IGameRoomServiceAsync, GameRoomServiceAsync>()
                 .AddScoped<IPlayerServiceAsync, PlayerServiceAsync>()
+                .AddScoped<IHangmanGame, HangmanGame>()
                 .AddControllers()
                 .AddApplicationPart(startupAssembly) // adds controllers from main project
                 .AddControllersAsServices();
