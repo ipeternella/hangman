@@ -184,7 +184,7 @@ namespace Hangman.Application
             return newGuessLetter;
         }
 
-        public async Task<GameStateData> UpdateGuessWordRoundState(GuessLetter newGuessLetter)
+        public async Task<GameStateData> UpdateGameRoundState(GuessLetter newGuessLetter)
         {
             var guessWord = newGuessLetter.GuessWord;
             var gameRound = guessWord.Round;

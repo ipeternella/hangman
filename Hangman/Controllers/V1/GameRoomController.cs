@@ -123,16 +123,11 @@ namespace Hangman.Controllers.V1
             var player = await _playerServiceAsync.GetByPlayerName(playerName);
             if (player == null) return BadRequest(new {message = "Host was not found!"});
             
-            _logger.LogInformation("Checking if the player is the host of the room...");
-            var gameRoomPlayer = await _gameRoomServiceAsync.GetPlayerRoomData(gameRoom, player);
-            
             // TODO: only host should be able to create new guess words for the players
+            // _logger.LogInformation("Checking if the player is the host of the room...");
+            // var gameRoomPlayer = await _gameRoomServiceAsync.GetPlayerRoomData(gameRoom, player);
             // if (gameRoomPlayer == null || !gameRoomPlayer.IsHost)
-            // {
-            //     return BadRequest(new
-            //         {message = "Player is not the host of the room. Only the host can create new words."});
-            // }
-            
+
             var createdGuessWord = await _gameRoomServiceAsync.CreateGuessWord(gameRoom, newGuessWord);
             return StatusCode(201, new {Id = createdGuessWord.Id, GuessWord = createdGuessWord.Word});
         }
@@ -146,7 +141,7 @@ namespace Hangman.Controllers.V1
 
         [HttpPost]
         [Route("{gameRoomId}/guessword/{guessWordId}/guessletter")]
-        public async Task<ActionResult> CreateGuessWord(Guid gameRoomId, Guid guessWordId, NewGuessLetterData newGuessLetterData)
+        public async Task<ActionResult<GameStateData>> CreateGuessWord(Guid gameRoomId, Guid guessWordId, NewGuessLetterData newGuessLetterData)
         {
             var guessLetterString = newGuessLetterData.GuessLetter;
             var playerName = newGuessLetterData.PlayerName;
@@ -176,11 +171,9 @@ namespace Hangman.Controllers.V1
             if (alreadyGuessedLetter != null) return BadRequest(new {message = "This letter has already been guessed!"});
 
             var guessLetter = await _gameRoomServiceAsync.CreateGuessLetter(gameRound, guessLetterString);
+            var updatedGameRoundState = await _gameRoomServiceAsync.UpdateGameRoundState(guessLetter); 
             
-            // TODO: update game state
-            // await _gameRoomServiceAsync.UpdateGuessWordRoundState(guessLetter); 
-            
-            return StatusCode(201, new {});
+            return StatusCode(201, updatedGameRoundState);
         }
     }
 }
