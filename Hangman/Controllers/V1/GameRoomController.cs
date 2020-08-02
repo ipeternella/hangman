@@ -190,11 +190,11 @@ namespace Hangman.Controllers.V1
 
             var alreadyGuessedLetter =
                 guessWord.GuessLetters.FirstOrDefault(letter => letter.Letter == guessLetterString);
+            
             if (alreadyGuessedLetter != null)
                 return BadRequest(new {message = "This letter has already been guessed!"});
 
             var updatedGameRoundState = await _gameRoomServiceAsync.UpdateGameRoundState(guessWord, guessLetterString);
-
             return StatusCode(201, updatedGameRoundState);
         }
     }
