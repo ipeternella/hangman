@@ -246,5 +246,11 @@ namespace Hangman.Application
             _logger.LogInformation("Returning updated game state data...");
             return updatedGameState;
         }
+
+        public IEnumerable<string> GetGuessWordStateSoFar(GuessWord guessWord)
+        {
+            var allGuessedLetters = guessWord.GuessLetters.Select(letter => letter.Letter);
+            return _gameLogic.GetGuessWordSoFar(allGuessedLetters, guessWord.Word);
+        }
     }
 }

@@ -132,12 +132,30 @@ namespace Hangman.Controllers.V1
             return StatusCode(201, new {Id = createdGuessWord.Id, GuessWord = createdGuessWord.Word});
         }
 
-        // [HttpGet]
-        // [Route("{roomId}/guessword/{guessWordId}/guessletter")]
-        // public async Task<ActionResult<IEnumerable<GuessLetter>>> CreateGuessWord(Guid roomId, NewGuessWordData newGuessWordData)
-        // {
-        //     //  TODO: gets all guess letters of a given guess word
-        // }
+        [HttpGet]
+        [Route("{gameRoomId}/guessword/{guessWordId}")]
+        public async Task<ActionResult<GameStateData>> GetGuessWord(Guid gameRoomId, Guid guessWordId)
+        {
+            _logger.LogInformation("Getting game state for {guessWordId}:l} in {gameRoomId:l}", guessWordId, gameRoomId);
+            
+            var gameRoom = await _gameRoomServiceAsync.GetById(gameRoomId);
+            if (gameRoom == null) return BadRequest(new {message = "Game Room was not found!"});
+
+            var guessWord = await _gameRoomServiceAsync.GetGuessedWord(guessWordId);
+            if (guessWord == null) return BadRequest(new {message = "Guess Word was not found in such room!"});
+
+            var gameRound = guessWord.Round;
+            var guessWordIfRoundIsOver = gameRound.IsOver ? guessWord.Word : null;
+            
+            return Ok(new GameStateData()
+            {
+                GuessWord = guessWordIfRoundIsOver,
+                IsOver = gameRound.IsOver,
+                PlayerHealth = guessWord.Round.Health,
+                GuessWordSoFar = _gameRoomServiceAsync.GetGuessWordStateSoFar(guessWord),
+                GuessedLetters = guessWord.GuessLetters.Select(letter => letter.Letter),
+            });
+        }
 
         [HttpPost]
         [Route("{gameRoomId}/guessword/{guessWordId}/guessletter")]
@@ -161,11 +179,9 @@ namespace Hangman.Controllers.V1
             var guessWord = await _gameRoomServiceAsync.GetGuessedWord(guessWordId);
             if (guessWord == null) return BadRequest(new {message = "Guess Word was not found in such room!"});
             
-            // invoke service for turns
             var gameRound = guessWord.Round;
             if (gameRound.IsOver) return BadRequest(new {message = "The round is over for this guess word!"});
             
-            // update state with new guess Letter (win, lose, or keep going?)
             var alreadyGuessedLetter = guessWord.GuessLetters.FirstOrDefault(letter => letter.Letter == guessLetterString);
             if (alreadyGuessedLetter != null) return BadRequest(new {message = "This letter has already been guessed!"});
             

@@ -18,5 +18,6 @@ namespace Hangman.Application
         public Task<GameRoomPlayer?> GetPlayerRoomData(GameRoom gameRoom, Player player);
         public Task<GuessLetter> CreateGuessLetter(GuessWord guessWord, string guessLetter);
         public Task<GameStateData> UpdateGameRoundState(GuessWord guessWord, string guessLetterString);
+        public IEnumerable<string> GetGuessWordStateSoFar(GuessWord guessWord);
     }
 }
