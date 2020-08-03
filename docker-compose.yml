@@ -41,12 +41,12 @@ services:
   # warning: ES is fine, but kibana/logstash are VERY slow to boot
   es:
     build:
-      context: elk/elasticsearch/
+      context: Elk/elasticsearch/
       args:
         ELK_VERSION: 7.8.0
     volumes:
       - type: bind
-        source: ./elk/elasticsearch/config/elasticsearch.yml
+        source: ./Elk/elasticsearch/config/elasticsearch.yml
         target: /usr/share/elasticsearch/config/elasticsearch.yml
         read_only: true
       - type: volume
@@ -62,16 +62,16 @@ services:
  
 #  logstash:
 #    build:
-#      context: elk/logstash/
+#      context: Elk/logstash/
 #      args:
 #        ELK_VERSION: 7.8.0
 #    volumes:
 #      - type: bind
-#        source: ./elk/logstash/config/logstash.yml
+#        source: ./Elk/logstash/config/logstash.yml
 #        target: /usr/share/logstash/config/logstash.yml
 #        read_only: true
 #      - type: bind
-#        source: ./elk/logstash/pipeline
+#        source: ./Elk/logstash/pipeline
 #        target: /usr/share/logstash/pipeline
 #        read_only: true
 #    ports:
@@ -85,12 +85,12 @@ services:
 #
 #  kibana:
 #    build:
-#      context: elk/kibana/
+#      context: Elk/kibana/
 #      args:
 #        ELK_VERSION: 7.8.0
 #    volumes:
 #      - type: bind
-#        source: ./elk/kibana/config/kibana.yml
+#        source: ./Elk/kibana/config/kibana.yml
 #        target: /usr/share/kibana/config/kibana.yml
 #        read_only: true
 #    ports:

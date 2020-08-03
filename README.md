@@ -1,10 +1,31 @@
 # Hangman
 
-A simplistic Hangman gaming API written in `C#` with `dotnet` framework.
+A simplistic Hangman gaming API written in `C#` with `dotnet` framework. Even though this gaming API is functional and tested
+many things should still be improved/developed to make it a deployment-ready gaming API.
 
-## Disclaimer
+![Alt text](Docs/Gif/PlayerWin.gif)
 
-This project is a WIP. Therefore, even this `README.md` is far from being finished.
+## API Demonstrations
+
+### Creating a game room to create guess words and players to join
+
+![Alt text](Docs/Gif/CreateRoom.gif)
+
+### Joining a game room (players must join to play)
+
+![Alt text](Docs/Gif/JoinRoom.gif)
+
+### Creating a guess word so that other players can guess
+
+![Alt text](Docs/Gif/CreateGuessWord.gif)
+
+### Player guessing letters until word is guess (victory)
+
+![Alt text](Docs/Gif/PlayerWin.gif)
+
+### Player guessing wrong letters until being hang (defeat)
+
+![Alt text](Docs/Gif/PlayerLoss.gif)
 
 ## Running the project
 
@@ -103,4 +124,3 @@ dotnet ef database update --project  ./Hangman/Hangman.csproj
 ```bash
 dotnet ef database update MigrationName --project  ./Hangman/Hangman.csproj 
 ```
-
