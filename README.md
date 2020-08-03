@@ -3,27 +3,11 @@
 A simplistic Hangman gaming API written in `C#` with `dotnet` framework. Even though this gaming API is functional and tested
 many things should still be improved/developed to make it a deployment-ready gaming API.
 
-![Alt text](Docs/Gif/PlayerWin.gif)
-
-## API Demonstrations
-
-### Creating a game room to create guess words and players to join
-
-![Alt text](Docs/Gif/CreateRoom.gif)
-
-### Joining a game room (players must join to play)
-
-![Alt text](Docs/Gif/JoinRoom.gif)
-
-### Creating a guess word so that other players can guess
-
-![Alt text](Docs/Gif/CreateGuessWord.gif)
-
-### Player guessing letters until word is guess (victory)
+## API demonstration: player guessing until victory
 
 ![Alt text](Docs/Gif/PlayerWin.gif)
 
-### Player guessing wrong letters until being hang (defeat)
+## API demonstration: player guessing until death
 
 ![Alt text](Docs/Gif/PlayerLoss.gif)
 
