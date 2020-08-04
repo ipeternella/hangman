@@ -16,9 +16,7 @@ This application's architecture uses layered-design that can roughly be divided 
 - `Business layer`
 - `Infra layer`
 
-This model is much simpler than other famous modelings, such as Domain Driven Design, but can also be very effective for domains that are not so complex but that are definitely requires more than CRUD logic.
-
-PS: there are, still, some couplings between the layers that could be removed with some DTOs usages/other techniques!
+This model is much simpler than other famous modelings approaches, such as Domain Driven Design, but that's not a problem! It's actually just a different architectural approach that is definitely effective for domains that are not so complex but, at the same time, require more than bare CRUD logic.
 
 # Hangman modeling (entities)
 
@@ -51,8 +49,8 @@ dotnet run --project ./Hangman/Hangman.csproj
 ### 2. In a docker container via docker-compose
 
 Running with `docker-compose` allows one to run without having `dotnet SDK` or anything else installed on his machine.
-The project is started with the watch option which rebuilds/reloads the container upon code changes. However, bear in mind
-that, as of now, debugging is not yet supported.
+
+The project is started with the watch option which rebuilds/reloads the container upon code changes. However, bear in mind that, as of now, debugging is not yet supported.
 
 Run the following commands on a terminal:
 
@@ -81,7 +79,7 @@ dotnet test
 With a `docker-compose`:
 
 ```bash
-docker-compose up tests
+docker-compose -f docker-compose-tests.yml up
 ```
 
 ## Project structure creation (so far)
