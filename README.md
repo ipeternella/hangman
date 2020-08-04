@@ -1,8 +1,8 @@
 # Hangman
 
-A Hangman (the old classic guess-the-word game) gaming API written in `C#` with `ASP.NET core` framework.
-
 ![Alt text](Docs/Img/HangmanLogo.png)
+
+A Hangman (the old classic guess-the-word game) gaming API written in `C#` with `ASP.NET core` framework.
 
 ## API demo: winning (guessing) the word without being hanged
 
