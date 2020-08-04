@@ -5,6 +5,27 @@ many things should still be improved/developed to make it a deployment-ready gam
 
 ![Alt text](Docs/Gif/PlayerWin.gif)
 
+# Hangman architecture
+
+![Alt text](Docs/Img/ApplicationCodeArchictecture.png)
+
+This application's architecture uses layered-design that can roughly be divided into:
+
+- `Controller layer`
+- `Application layer (use cases)`
+- `Business layer`
+- `Infra layer`
+
+This model is much simpler than other famous modelings, such as Domain Driven Design, but can also be very effective for domains that are not so complex but that are definitely requires more than CRUD logic.
+
+PS: there are, still, some couplings between the layers that could be removed with some DTOs usages/other techniques!
+
+# Hangman modeling (entities)
+
+![Alt text](Docs/Img/HangmanModeling.png)
+
+The presented entities were used to model the Hangman game problem.
+
 ## Running the project
 
 As this project contains a `dockerized` application, it can be executed in development mode in two environments:
@@ -67,7 +88,7 @@ docker-compose up tests
 
 ```bash
 # solution creation
-dotnet new sln -n Hangman 
+dotnet new sln -n Hangman
 dotnet sln list  # shows no projects in the solution
 
 # projects creation
@@ -94,11 +115,11 @@ dotnet ef migrations remove  # removes last applied migration
 ## Applying migrations manually (done at runtime in this project)
 
 ```bash
-dotnet ef database update --project  ./Hangman/Hangman.csproj 
+dotnet ef database update --project  ./Hangman/Hangman.csproj
 ```
 
 ## Rolling back (reverting) to a specific migration (applied)
 
 ```bash
-dotnet ef database update MigrationName --project  ./Hangman/Hangman.csproj 
+dotnet ef database update MigrationName --project  ./Hangman/Hangman.csproj
 ```
