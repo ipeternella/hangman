@@ -3,7 +3,13 @@
 A simplistic Hangman gaming API written in `C#` with `dotnet` framework. Even though this gaming API is functional and tested
 many things should still be improved/developed to make it a deployment-ready gaming API.
 
+## API demo: winning (guessing) the word without being hanged
+
 ![Alt text](Docs/Gif/PlayerWin.gif)
+
+## API demo: losing a game (not guessing the word) by being hanged
+
+![Alt text](Docs/Gif/PlayerLoss.gif)
 
 # Hangman architecture
 
