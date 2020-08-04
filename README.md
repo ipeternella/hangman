@@ -1,7 +1,8 @@
 # Hangman
 
-A simplistic Hangman gaming API written in `C#` with `dotnet` framework. Even though this gaming API is functional and tested
-many things should still be improved/developed to make it a deployment-ready gaming API.
+A Hangman (the old classic guess-the-word game) gaming API written in `C#` with `ASP.NET core` framework.
+
+![Alt text](Docs/Img/HangmanLogo.png)
 
 ## API demo: winning (guessing) the word without being hanged
 
@@ -23,6 +24,8 @@ This application's architecture uses layered-design that can roughly be divided 
 - `Infra layer`
 
 This model is much simpler than other famous modelings approaches, such as Domain Driven Design, but that's not a problem! It's actually just a different architectural approach that is definitely effective for domains that are not so complex but, at the same time, require more than bare CRUD logic.
+
+This application comes with `Serilog` configure for sending logs to console's stdout and Elasticsearch (locally brought up via `docker-compose`).
 
 # Hangman modeling (entities)
 
