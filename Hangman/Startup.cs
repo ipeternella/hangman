@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Serilog;
+using AutoMapper;
 
 namespace Hangman
 {
@@ -38,7 +39,7 @@ namespace Hangman
             // configuration of endpoints for the UI client on the 'HealthChecksUI' of appsettings.json
             services.AddHealthChecksUI()
                 .AddPostgreSqlStorage(Configuration.GetConnectionString("DBConnection"));
-            
+
             // injection os other services
             services.AddHttpContextAccessor()
                 .AddDbContext<HangmanDbContext>(options =>
@@ -47,6 +48,7 @@ namespace Hangman
                 .AddScoped<IGameRoomServiceAsync, GameRoomServiceAsync>()
                 .AddScoped<IPlayerServiceAsync, PlayerServiceAsync>()
                 .AddScoped<IHangmanGame, HangmanGame>()
+                .AddAutoMapper(typeof(Startup))
                 .AddControllers()
                 .AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);  // ignore loops when serializing JSON
         }
@@ -72,7 +74,7 @@ namespace Hangman
 
             // middleware for activating the healthcheck UI
             app.UseHealthChecksUI(options => options.UIPath = "/healthcheck-dashboard");
-            
+
             app.UseEndpoints(endpoints =>
             {
                 // changes health-check endpoint to return a JSON rather than plain/text 'Healthy'

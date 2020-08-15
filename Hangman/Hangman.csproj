@@ -10,6 +10,7 @@
     <PackageReference Include="AspNetCore.HealthChecks.UI" Version="3.1.1" />
     <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="3.1.1" />
     <PackageReference Include="AspNetCore.HealthChecks.UI.PostgreSQL.Storage" Version="3.1.1" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.6" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Analyzers" Version="3.1.5" />
@@ -27,57 +28,6 @@
     <PackageReference Include="Serilog.Settings.Configuration" Version="3.1.0" />
     <PackageReference Include="Serilog.Sinks.Async" Version="1.4.0" />
     <PackageReference Include="Serilog.Sinks.ElasticSearch" Version="8.1.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Remove="Hangman\**" />
-    <Compile Remove="Migrations\20200628133745_initial.cs" />
-    <Compile Remove="Migrations\20200628133745_initial.Designer.cs" />
-    <Compile Remove="Migrations\GameRoomContextModelSnapshot.cs" />
-    <Compile Remove="Models\GameRoomContext.cs" />
-    <Compile Remove="Infrastructure\**" />
-    <Compile Remove="DTOs\**" />
-    <Compile Remove="Application\NewGameRoomDTO.cs" />
-    <Compile Remove="Migrations\20200703002406_FirstMigration.cs" />
-    <Compile Remove="Migrations\20200703002406_FirstMigration.Designer.cs" />
-    <Compile Remove="Migrations\HangmanDbContextModelSnapshot.cs" />
-    <Compile Remove="Migrations\20200704221809_FirstMigration.cs" />
-    <Compile Remove="Migrations\20200704221809_FirstMigration.Designer.cs" />
-    <Compile Remove="Migrations\20200704222138_FirstMigration.cs" />
-    <Compile Remove="Migrations\20200704222138_FirstMigration.Designer.cs" />
-    <Compile Remove="Infra\LogEnrichers.cs" />
-    <Compile Remove="Application\IUserService.cs" />
-    <Compile Remove="Application\UserService.cs" />
-    <Compile Remove="Migrations\20200705154221_FirstMigration.cs" />
-    <Compile Remove="Migrations\20200705154221_FirstMigration.Designer.cs" />
-    <Compile Remove="Migrations\20200719194613_FirstMigration.cs" />
-    <Compile Remove="Migrations\20200719194613_FirstMigration.Designer.cs" />
-    <Compile Remove="Migrations\Hangman\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Remove="Hangman\**" />
-    <EmbeddedResource Remove="Infrastructure\**" />
-    <EmbeddedResource Remove="DTOs\**" />
-    <EmbeddedResource Remove="Migrations\Hangman\**" />
-    <EmbeddedResource Remove="Business\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="Hangman\**" />
-    <None Remove="Infrastructure\**" />
-    <None Remove="DTOs\**" />
-    <None Remove="Migrations\Hangman\**" />
-    <None Remove="Business\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Remove="Hangman\**" />
-    <Content Remove="Infrastructure\**" />
-    <Content Remove="DTOs\**" />
-    <Content Remove="appsettings.Local.json" />
-    <Content Remove="Migrations\Hangman\**" />
-    <Content Remove="Business\**" />
   </ItemGroup>
 
   <ItemGroup>
