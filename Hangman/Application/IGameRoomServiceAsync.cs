@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Hangman.DTOs;
 using Hangman.Models;
 
 namespace Hangman.Application
@@ -11,7 +12,7 @@ namespace Hangman.Application
         public Task<IEnumerable<GameRoom>> GetAll();
         public Task<IEnumerable<GuessWord>> GetAllGuessedWords(Guid gameRoomId);
         public Task<GuessWord?> GetGuessedWord(Guid guessWordId);
-        public Task<GameRoom> Create(NewGameRoomData newGameRoomData);
+        public Task<GameRoom> Create(GameRoomDTO gameRoomDTO);
         public Task<GuessWord> CreateGuessWord(GameRoom gameRoom, string guessWord);
         public Task<GameRoomPlayer> JoinRoom(GameRoom gameRoom, Player player, bool isHost = false);
         public Task<GameRoomPlayer> LeaveRoom(GameRoomPlayer gameRoomPlayer);

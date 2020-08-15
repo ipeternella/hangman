@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Hangman.Business;
+using Hangman.DTOs;
 using Hangman.Models;
 using Hangman.Repository.Interfaces;
 using Microsoft.Extensions.Logging;
@@ -54,6 +56,7 @@ namespace Hangman.Application
         private readonly IHangmanRepositoryAsync<GameRoom> _repository;
         private readonly ILogger<GameRoomServiceAsync> _logger;
         private readonly IHangmanGame _gameLogic;
+        private readonly IMapper _mapper;
 
         public GameRoomServiceAsync(IHangmanRepositoryAsync<GameRoom> repository,
             IHangmanRepositoryAsync<GameRoomPlayer> repositoryGameRoomPlayer,
@@ -61,7 +64,9 @@ namespace Hangman.Application
             IHangmanRepositoryAsync<GuessWord> repositoryGuessWord,
             IHangmanRepositoryAsync<GameRound> repositoryGameRound,
             ILogger<GameRoomServiceAsync> logger,
-            IHangmanGame gameLogic)
+            IHangmanGame gameLogic,
+            IMapper mapper
+            )
         {
             _repositoryGameRoomPlayer = repositoryGameRoomPlayer;
             _repositoryGuessLetter = repositoryGuessLetter;
@@ -70,12 +75,13 @@ namespace Hangman.Application
             _repository = repository;
             _gameLogic = gameLogic;
             _logger = logger;
+            _mapper = mapper;
         }
 
         public async Task<GameRoom?> GetById(Guid id)
         {
             var gameRoom = await _repository.GetById(id);
-            var includedFieldsOnSerialization = new[] {"GameRoomPlayers", "GuessWords"};
+            var includedFieldsOnSerialization = new[] { "GameRoomPlayers", "GuessWords" };
 
             await _repository.GetById(id, includedFieldsOnSerialization);
             return gameRoom;
@@ -83,7 +89,7 @@ namespace Hangman.Application
 
         public async Task<IEnumerable<GameRoom>> GetAll()
         {
-            var includedFieldsOnSerialization = new[] {"GameRoomPlayers", "GuessWords"};
+            var includedFieldsOnSerialization = new[] { "GameRoomPlayers", "GuessWords" };
             var gameRooms = await _repository.All(includedFieldsOnSerialization);
 
             return gameRooms;
@@ -98,15 +104,15 @@ namespace Hangman.Application
 
         public async Task<GuessWord?> GetGuessedWord(Guid guessWordId)
         {
-            var includedFieldsOnSerialization = new[] {"GameRoom", "Round", "GuessLetters"};
+            var includedFieldsOnSerialization = new[] { "GameRoom", "Round", "GuessLetters" };
             var guessWord = await _repositoryGuessWord.GetById(guessWordId, includedFieldsOnSerialization);
 
             return guessWord;
         }
 
-        public async Task<GameRoom> Create(NewGameRoomData newGameRoomData)
+        public async Task<GameRoom> Create(GameRoomDTO gameRoomDTO)
         {
-            var newGameRoom = new GameRoom {Name = newGameRoomData.Name};
+            var newGameRoom = _mapper.Map<GameRoomDTO, GameRoom>(gameRoomDTO);
             await _repository.Save(newGameRoom);
 
             return newGameRoom;
