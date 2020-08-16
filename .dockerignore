@@ -1,10 +1,6 @@
-.dockerignore
-.env
-.git
-.gitignore
-.vs
-.vscode
-*/bin
-*/obj
-**/.toolstarget
-**/launchSettings.json
+*
+!Hangman
+**/bin
+**/obj
+**/out
+**/Properties
