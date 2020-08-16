@@ -19,38 +19,38 @@ namespace Hangman.Application
     {
         private readonly IHangmanRepositoryAsync<Player> _repository;
         private readonly ILogger<PlayerServiceAsync> _logger;
-        
+
         public PlayerServiceAsync(IHangmanRepositoryAsync<Player> repository, ILogger<PlayerServiceAsync> logger)
         {
             _repository = repository;
             _logger = logger;
         }
-        
+
         public async Task<Player?> GetById(Guid id)
         {
             var player = await _repository.GetById(id);
-            
+
             return player;
         }
-        
+
         public async Task<Player?> GetByPlayerName(string playerName)
         {
             var possiblePlayers = await _repository.Filter(p => p.Name == playerName);
             var player = possiblePlayers.FirstOrDefault();  // might be null
-            
+
             return player;
         }
 
         public async Task<IEnumerable<Player>> GetAll()
         {
             var players = await _repository.All();
-            
+
             return players;
         }
-        
+
         public async Task<Player> Create(NewPlayerData newPlayerData)
         {
-            var newPlayer = new Player {Name = newPlayerData.Name};
+            var newPlayer = new Player { Name = newPlayerData.Name };
             await _repository.Save(newPlayer);
 
             return newPlayer;

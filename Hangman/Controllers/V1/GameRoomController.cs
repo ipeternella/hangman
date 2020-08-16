@@ -33,8 +33,8 @@ namespace Hangman.Controllers.V1
         {
             _logger.LogInformation("Calling gameRoomService to get room with id: {id:l}", gameRoomId);
             var gameRoom = await _gameRoomServiceAsync.GetById(gameRoomId);
-            if (gameRoom != null) return Ok(gameRoom);
 
+            if (gameRoom != null) return Ok(gameRoom);
             return NotFound();
         }
 
@@ -52,28 +52,25 @@ namespace Hangman.Controllers.V1
         public async Task<ActionResult<GameRoom>> Create(GameRoomDTO gameRoomDTO)
         {
             var gameRoom = await _gameRoomServiceAsync.Create(gameRoomDTO);
+            _logger.LogInformation("New room has been created: {@gameRoom}", gameRoom);
 
-            _logger.LogInformation("New room has been created: {gameRoom}", gameRoom);
             return CreatedAtAction(nameof(GetById), new { gameRoomId = gameRoom.Id }, gameRoom);
         }
 
         [HttpPost]
         [Route("{gameRoomId}/join")]
-        public async Task<ActionResult<GameRoom>> JoinRoom(Guid gameRoomId, JoinRoomData joinRoomData)
+        public async Task<ActionResult<PlayerInRoomDTO>> JoinRoom(Guid gameRoomId, PlayerDTO playerDTO)
         {
-            var playerName = joinRoomData.PlayerName;
-            _logger.LogInformation("Player {playerName:l} wants to join room {id:l}", playerName, gameRoomId);
+            var joinRoomDTO = new JoinRoomDTO { GameRoomId = gameRoomId, PlayerName = playerDTO.PlayerName, IsHost = false };
+            _logger.LogInformation("Start join room validation: {@joinRoomDTO}", joinRoomDTO);
 
-            var gameRoom = await _gameRoomServiceAsync.GetById(gameRoomId);
-            if (gameRoom == null) return BadRequest(new { message = "Game Room was not found!" });
+            var validator = new GameRoomPlayerValidator(_gameRoomServiceAsync, _playerServiceAsync);
+            var validationResult = validator.Validate(joinRoomDTO);
 
-            _logger.LogInformation("Room was found. Checking if player is valid...");
-            var player = await _playerServiceAsync.GetByPlayerName(playerName);
-            if (player == null) return BadRequest(new { message = "Player was not found!" });
+            if (!validationResult.IsValid) return BadRequest(validationResult.Errors);
 
-            var gameRoomPlayer = await _gameRoomServiceAsync.JoinRoom(gameRoom, player);
-            return StatusCode(200,
-                new { playerId = player.Id, gameRoomId = gameRoom.Id, isInRoom = gameRoomPlayer.IsInRoom });
+            var playerInRoomDTO = await _gameRoomServiceAsync.JoinRoom(joinRoomDTO);
+            return StatusCode(200, playerInRoomDTO);
         }
 
         [HttpPost]

@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using FluentValidation;
 using Hangman.Business;
 using Hangman.DTOs;
 using Hangman.Models;
@@ -53,6 +54,7 @@ namespace Hangman.Application
         private readonly IHangmanRepositoryAsync<GuessLetter> _repositoryGuessLetter;
         private readonly IHangmanRepositoryAsync<GameRound> _repositoryGameRound;
         private readonly IHangmanRepositoryAsync<GuessWord> _repositoryGuessWord;
+        private readonly IHangmanRepositoryAsync<Player> _repositoryPlayer;
         private readonly IHangmanRepositoryAsync<GameRoom> _repository;
         private readonly ILogger<GameRoomServiceAsync> _logger;
         private readonly IHangmanGame _gameLogic;
@@ -63,6 +65,7 @@ namespace Hangman.Application
             IHangmanRepositoryAsync<GuessLetter> repositoryGuessLetter,
             IHangmanRepositoryAsync<GuessWord> repositoryGuessWord,
             IHangmanRepositoryAsync<GameRound> repositoryGameRound,
+            IHangmanRepositoryAsync<Player> repositoryPlayer,
             ILogger<GameRoomServiceAsync> logger,
             IHangmanGame gameLogic,
             IMapper mapper
@@ -72,6 +75,7 @@ namespace Hangman.Application
             _repositoryGuessLetter = repositoryGuessLetter;
             _repositoryGameRound = repositoryGameRound;
             _repositoryGuessWord = repositoryGuessWord;
+            _repositoryPlayer = repositoryPlayer;
             _repository = repository;
             _gameLogic = gameLogic;
             _logger = logger;
@@ -118,11 +122,12 @@ namespace Hangman.Application
             return newGameRoom;
         }
 
-        // join room (without joining, can't make moves!)
-        public async Task<GameRoomPlayer> JoinRoom(GameRoom gameRoom, Player player, bool isHost = false)
+        public async Task<PlayerInRoomDTO> JoinRoom(JoinRoomDTO joinRoomDTO)
         {
+            var gameRoom = await _repository.GetById(joinRoomDTO.GameRoomId);
+            var player = _repositoryPlayer.Filter(p => p.Name == joinRoomDTO.PlayerName).Result.FirstOrDefault();
             var previousGameRoomPlayer = await _repositoryGameRoomPlayer.Get(
-                grp => (grp.PlayerId == player.Id) && (grp.GameRoomId == gameRoom.Id));
+                grp => (grp.PlayerId == player.Id) && (grp.GameRoomId == joinRoomDTO.GameRoomId));
 
             if (previousGameRoomPlayer != null)
             {
@@ -130,21 +135,23 @@ namespace Hangman.Application
                 previousGameRoomPlayer.IsInRoom = true;
                 await _repositoryGameRoomPlayer.Update(previousGameRoomPlayer);
 
-                return previousGameRoomPlayer;
+                var alreadyJoinedRoomDTO = _mapper.Map<GameRoomPlayer, PlayerInRoomDTO>(previousGameRoomPlayer);
+                return alreadyJoinedRoomDTO;
             }
 
             _logger.LogInformation("First time player is joining this room...");
             var gameRoomPlayer = new GameRoomPlayer()
             {
-                GameRoom = gameRoom,
-                Player = player,
-                IsHost = isHost,
+                GameRoom = gameRoom!,
+                Player = player!,
+                IsHost = joinRoomDTO.IsHost,
                 IsBanned = false,
                 IsInRoom = true,
             };
-
             await _repositoryGameRoomPlayer.Save(gameRoomPlayer);
-            return gameRoomPlayer;
+
+            var playerJoinedRoomDTO = _mapper.Map<GameRoomPlayer, PlayerInRoomDTO>(gameRoomPlayer);
+            return playerJoinedRoomDTO;
         }
 
         public async Task<GameRoomPlayer> LeaveRoom(GameRoomPlayer gameRoomPlayer)
