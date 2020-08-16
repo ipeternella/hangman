@@ -128,19 +128,21 @@ namespace Hangman.Controllers.V1
 
         [HttpGet]
         [Route("{gameRoomId}/guessword/{guessWordId}")]
-        public async Task<ActionResult<GameStateData>> GetGuessWord(Guid gameRoomId, Guid guessWordId)
+        public async Task<ActionResult<GameStateDTO>> GetGuessWord(Guid gameRoomId, Guid guessWordId)
         {
-            _logger.LogInformation("Getting game state for {guessWordId}:l} in {gameRoomId:l}", guessWordId,
-                gameRoomId);
+            var guessWordInGuessRoomDTO = new GuessWordInGuessRoomDTO { GameRoomId = gameRoomId, GuessWordId = guessWordId };
+            _logger.LogInformation("Getting game state for: {@guessWordInGuessRoomDTO", guessWordInGuessRoomDTO);
+
+            var validator = new GuessWordInGameRoomValidator(_gameRoomServiceAsync, _playerServiceAsync);
+            var validationResult = validator.Validate(guessWordInGuessRoomDTO);
+
+            if (!validationResult.IsValid) return BadRequest(validationResult.Errors);
 
             var guessWord = await _gameRoomServiceAsync.GetGuessedWord(guessWordId);
-            if (guessWord == null || guessWord.GameRoom.Id != gameRoomId)
-                return BadRequest(new { message = "Guess Word was not found in such room!" });
-
-            var gameRound = guessWord.Round;
+            var gameRound = guessWord!.Round;  // previously validated
             var guessWordIfRoundIsOver = gameRound.IsOver ? guessWord.Word : null;
 
-            return Ok(new GameStateData()
+            return Ok(new GameStateDTO
             {
                 GuessWord = guessWordIfRoundIsOver,
                 IsOver = gameRound.IsOver,

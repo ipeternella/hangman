@@ -14,6 +14,12 @@ namespace Hangman.DTOs
         public Guid GameRoomId { get; set; }
     }
 
+    public class GuessWordInGuessRoomDTO
+    {
+        public Guid GameRoomId { get; set; }
+        public Guid GuessWordId { get; set; }
+    }
+
     public class GuessWordResponseDTO
     {
         public string GuessWord { get; set; } = null!;

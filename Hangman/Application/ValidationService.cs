@@ -108,4 +108,29 @@ namespace Hangman.Application
             }).WithMessage("Player is not the room.");
         }
     }
+
+    public class GuessWordInGameRoomValidator : AbstractValidator<GuessWordInGuessRoomDTO>
+    {
+        private readonly IGameRoomServiceAsync _gameRoomService;
+        private readonly IPlayerServiceAsync _playerService;
+
+        public GuessWordInGameRoomValidator(IGameRoomServiceAsync gameRoomService,
+            IPlayerServiceAsync playerService)
+        {
+            _gameRoomService = gameRoomService;
+            _playerService = playerService;
+
+            RuleFor(dto => dto.GuessWordId).NotEmpty()
+            .MustAsync(async (dto, guessWordId, cancellation) =>
+            {
+                var guessWord = await _gameRoomService.GetGuessedWord(guessWordId);
+                var gameRoom = await _gameRoomService.GetById(dto.GameRoomId);
+
+                if (gameRoom == null || guessWord == null) return false;
+                if (guessWord.GameRoomId != dto.GameRoomId) return false;
+
+                return true;
+            }).WithMessage("Guess word was not found in such game room.");
+        }
+    }
 }
