@@ -63,8 +63,48 @@ namespace Hangman.Application
             {
                 var gameRoomPlayerData = await gameRoomService.GetPlayerRoomData(dto.GameRoomId, dto.PlayerId);
 
-                if (gameRoomPlayerData == null) return gameRoomPlayerData != null;  // can't be null
-                return gameRoomPlayerData.IsInRoom;
+                if (gameRoomPlayerData == null || !gameRoomPlayerData.IsInRoom) return false;
+                return true;
+            }).WithMessage("Player is not the room.");
+        }
+    }
+
+    public class GuessWordCreationHostValidation : AbstractValidator<GuessWordDTO>
+    {
+        private readonly IGameRoomServiceAsync _gameRoomService;
+        private readonly IPlayerServiceAsync _playerService;
+
+        public GuessWordCreationHostValidation(IGameRoomServiceAsync gameRoomService,
+            IPlayerServiceAsync playerService)
+        {
+            _gameRoomService = gameRoomService;
+            _playerService = playerService;
+
+            RuleFor(dto => dto.GameRoomId)
+            .MustAsync(async (gameRoomId, cancellation) =>
+            {
+                var gameRoom = await _gameRoomService.GetById(gameRoomId);
+                return gameRoom != null;
+            }).WithMessage("Game room was not found.");
+
+            RuleFor(dto => dto.PlayerId).NotEmpty()
+            .MustAsync(async (dto, playerId, cancellation) =>
+            {
+                var player = await playerService.GetById(playerId);
+                return player != null;
+            }).WithMessage("Player was not found.");
+
+            RuleFor(dto => dto.GameRoomId).NotEmpty()
+            .MustAsync(async (dto, gameRoomId, cancellation) =>
+            {
+                var gameRoomPlayerData = await gameRoomService.GetPlayerRoomData(dto.GameRoomId, dto.PlayerId);
+
+                if (gameRoomPlayerData == null || !gameRoomPlayerData.IsInRoom) return false;
+
+                // TODO: activate so only hosts can create guess words
+                // if (!gameRoomPlayerData.IsHost) return false;
+
+                return true;
             }).WithMessage("Player is not the room.");
         }
     }

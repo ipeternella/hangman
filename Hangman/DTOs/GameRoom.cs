@@ -17,11 +17,6 @@ namespace Hangman.DTOs
         public Guid PlayerId { get; set; }
     }
 
-    public class PlayerIdDTO
-    {
-        public Guid PlayerId { get; set; }
-    }
-
     public class JoinRoomDTO
     {
         [Required]

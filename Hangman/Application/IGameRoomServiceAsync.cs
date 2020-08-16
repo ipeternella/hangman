@@ -13,7 +13,7 @@ namespace Hangman.Application
         public Task<IEnumerable<GuessWord>> GetAllGuessedWords(Guid gameRoomId);
         public Task<GuessWord?> GetGuessedWord(Guid guessWordId);
         public Task<GameRoom> Create(GameRoomDTO gameRoomDTO);
-        public Task<GuessWord> CreateGuessWord(GameRoom gameRoom, string guessWord);
+        public Task<GuessWordResponseDTO> CreateGuessWord(GuessWordDTO guessWordDTO);
         public Task<PlayerInRoomDTO> JoinRoom(JoinRoomDTO joinRoomDTO);
         public Task<PlayerInRoomDTO> LeaveRoom(LeaveRoomDTO leaveRoomDTO);
         public Task<GameRoomPlayer?> GetPlayerRoomData(Guid gameRoomId, Guid playerId);

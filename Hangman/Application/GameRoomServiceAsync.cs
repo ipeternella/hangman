@@ -174,13 +174,14 @@ namespace Hangman.Application
             return gameRoomData;
         }
 
-        public async Task<GuessWord> CreateGuessWord(GameRoom gameRoom, string guessWord)
+        public async Task<GuessWordResponseDTO> CreateGuessWord(GuessWordDTO guessWordDTO)
         {
+            var gameRoom = await _repository.GetById(guessWordDTO.GameRoomId);  // previously validated
             var newGuessWord = new GuessWord()
             {
-                GameRoom = gameRoom,
-                GameRoomId = gameRoom.Id,
-                Word = guessWord
+                GameRoom = gameRoom!,
+                GameRoomId = gameRoom!.Id,
+                Word = guessWordDTO.GuessWord
             };
 
             var gameRound = new GameRound
@@ -192,7 +193,7 @@ namespace Hangman.Application
             newGuessWord.Round = gameRound; // 1-to-1 relationship must be also created!
             await _repositoryGuessWord.Save(newGuessWord);
 
-            return newGuessWord;
+            return new GuessWordResponseDTO { Id = newGuessWord.Id, GuessWord = newGuessWord.Word };
         }
 
         public async Task<GuessLetter> CreateGuessLetter(GuessWord guessWord, string guessLetter)

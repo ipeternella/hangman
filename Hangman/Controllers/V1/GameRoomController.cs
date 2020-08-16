@@ -105,26 +105,25 @@ namespace Hangman.Controllers.V1
 
         [HttpPost]
         [Route("{gameRoomId}/guessword")]
-        public async Task<ActionResult<GuessWord>> CreateGuessWordInRoom(Guid gameRoomId, NewGuessWordData newGuessWordData)
+        public async Task<ActionResult<GuessWord>> CreateGuessWordInRoom(Guid gameRoomId, GuessWordRequestDTO guessWordRequestDTO)
         {
-            var newGuessWord = newGuessWordData.GuessWord;
-            var playerName = newGuessWordData.PlayerName;
-            _logger.LogInformation("Player {playerName:l} wants to leave room {id:l}", playerName, newGuessWord);
+            _logger.LogInformation("New guess word creation: {@guessWordRequestDTO}", guessWordRequestDTO);
+            var guessWordDTO = new GuessWordDTO
+            {
+                GameRoomId = gameRoomId,
+                PlayerId = guessWordRequestDTO.PlayerId,
+                GuessWord = guessWordRequestDTO.GuessWord
+            };
 
-            var gameRoom = await _gameRoomServiceAsync.GetById(gameRoomId);
-            if (gameRoom == null) return BadRequest(new { message = "Game Room was not found!" });
+            var validator = new GuessWordCreationHostValidation(_gameRoomServiceAsync, _playerServiceAsync);
+            var validationResult = validator.Validate(guessWordDTO);
 
-            _logger.LogInformation("Room was found. Checking if player is valid...");
-            var player = await _playerServiceAsync.GetByPlayerName(playerName);
-            if (player == null) return BadRequest(new { message = "Host was not found!" });
+            if (!validationResult.IsValid) return BadRequest(validationResult.Errors);
 
-            // TODO: only host should be able to create new guess words for the players
-            // _logger.LogInformation("Checking if the player is the host of the room...");
-            // var gameRoomPlayer = await _gameRoomServiceAsync.GetPlayerRoomData(gameRoom, player);
-            // if (gameRoomPlayer == null || !gameRoomPlayer.IsHost)
+            _logger.LogInformation("Validations were successfull, removing player from the room...");
+            var guessWordResponseDTO = await _gameRoomServiceAsync.CreateGuessWord(guessWordDTO);
 
-            var createdGuessWord = await _gameRoomServiceAsync.CreateGuessWord(gameRoom, newGuessWord);
-            return StatusCode(201, new { createdGuessWord.Id, GuessWord = createdGuessWord.Word });
+            return StatusCode(201, guessWordResponseDTO);
         }
 
         [HttpGet]
