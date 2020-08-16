@@ -173,31 +173,6 @@ namespace Hangman.Controllers.V1
 
             var gameStateDTO = await _gameRoomServiceAsync.UpdateGameRoundState(newGuessLetterDTO);
             return StatusCode(201, gameStateDTO);
-
-            // var guessWord = await _gameRoomServiceAsync.GetGuessedWord(guessWordId);
-            // if (guessWord == null || guessWord.GameRoom.Id != gameRoomId)
-            //     return BadRequest(new { message = "Guess Word was not found in such room!" });
-
-            // var gameRoom = await _gameRoomServiceAsync.GetById(gameRoomId);  // gameRoomId obligatory matches guess word rooms' Id
-            // if (gameRoom == null) return BadRequest(new { message = "Game Room was not found!" });
-
-            // _logger.LogInformation("Room was found. Checking if player is valid...");
-            // var player = await _playerServiceAsync.GetByPlayerName(playerName);
-            // if (player == null) return BadRequest(new { message = "Player was not found!" });
-
-            // _logger.LogInformation("Checking if the player is in the room...");
-            // var gameRoomPlayer = await _gameRoomServiceAsync.GetPlayerRoomData(gameRoom.Id, player.Id);
-            // if (gameRoomPlayer == null || !gameRoomPlayer.IsInRoom)
-            //     return BadRequest(new { message = "Player is not in the room!" }); // TODO: HOST cannot make guesses!
-
-            // var gameRound = guessWord.Round;
-            // if (gameRound.IsOver) return BadRequest(new { message = "The round is over for this guess word!" });
-
-            // var alreadyGuessedLetter =
-            //     guessWord.GuessLetters.FirstOrDefault(letter => letter.Letter == guessLetterString);
-
-            // if (alreadyGuessedLetter != null)
-            //     return BadRequest(new { message = "This letter has already been guessed!" });
         }
     }
 }
