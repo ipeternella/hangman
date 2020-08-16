@@ -28,22 +28,6 @@ namespace Hangman.Application
         [Required] public string PlayerName { get; set; } = default!; // null-forgiving as this property is required
     }
 
-    public class NewGuessWordData
-    {
-        [Required] public string GuessWord { get; set; } = default!; // null-forgiving as this property is required
-        [Required] public string PlayerName { get; set; } = default!; // null-forgiving as this property is required
-    }
-
-    public class JoinRoomData
-    {
-        [Required] public string PlayerName { get; set; } = default!; // null-forgiving as this property is required
-    }
-
-    public class NewGameRoomData
-    {
-        [Required] public string Name { get; set; } = default!;
-    }
-
     /**
      * Application service that is used to perform CRUD operations over the entity
      * GameRoom.
