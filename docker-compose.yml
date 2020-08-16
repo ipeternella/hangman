@@ -24,19 +24,19 @@ services:
       - es
     command:
       [
-        "./wait-for-it.sh",
+        "./Scripts/wait-for-it.sh",
         "db:5432",
         "-t",
         "120",
         "--",
-        "./wait-for-it.sh",
+        "./Scripts/wait-for-it.sh",
         "es:9200",
         "-t",
         "120",
         "--",
-        "./start-from-compose.sh",
+        "./Scripts/start-from-compose.sh",
       ]
-  
+
   # ELK stack
   # warning: ES is fine, but kibana/logstash are VERY slow to boot
   es:
@@ -59,7 +59,7 @@ services:
       ES_JAVA_OPTS: "-Xms256m -Xmx512m"
       ELASTIC_PASSWORD: elastic
       discovery.type: single-node
- 
+
 #  logstash:
 #    build:
 #      context: Elk/logstash/

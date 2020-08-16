@@ -21,10 +21,10 @@ services:
       - db
     command:
       [
-        "./wait-for-it.sh",
+        "./Scripts/wait-for-it.sh",
         "db:5432",
         "-t",
         "120",
         "--",
-        "./start-tests.sh",
+        "./Scripts/start-tests.sh",
       ]
