@@ -1,11 +1,30 @@
-FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build-env
+# FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build-env
+# WORKDIR /app
+# ARG PROJECT_NAME=Hangman
+
+# # Copy csproj and restore as distinct layers
+# COPY . ./
+# RUN dotnet restore $PROJECT_NAME/$PROJECT_NAME.csproj
+
+# # Setting dotnet ef available
+# RUN dotnet tool install --global dotnet-ef
+# ENV PATH="${PATH}:/root/.dotnet/tools"
+
+# Main variables required for the Docker layers
+ARG MAIN_PROJECT_NAME=Hangman
+ARG DOTNETCORE_VERSION=3.1
+
+# Starting layer point using build image with dotnet SDK (very heavy image ~ 2GB)
+FROM mcr.microsoft.com/dotnet/core/sdk:$DOTNETCORE_VERSION AS build-env
+ARG MAIN_PROJECT_NAME
+ARG DOTNETCORE_VERSION
+
 WORKDIR /app
-ARG PROJECT_NAME=Hangman
 
-# Copy csproj and restore as distinct layers
+# Restores (downloads) all NuGet packages from all projects of the solution (Test is ignored)
 COPY . ./
-RUN dotnet restore $PROJECT_NAME/$PROJECT_NAME.csproj
+RUN dotnet restore ./$MAIN_PROJECT_NAME/$MAIN_PROJECT_NAME.csproj
 
-# Setting dotnet ef available
+# Ef tools installation
 RUN dotnet tool install --global dotnet-ef
 ENV PATH="${PATH}:/root/.dotnet/tools"
