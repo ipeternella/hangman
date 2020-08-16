@@ -154,44 +154,50 @@ namespace Hangman.Controllers.V1
 
         [HttpPost]
         [Route("{gameRoomId}/guessword/{guessWordId}/guessletter")]
-        public async Task<ActionResult<GameStateData>> CreateGuessWord(Guid gameRoomId, Guid guessWordId,
-            NewGuessLetterData newGuessLetterData)
+        public async Task<ActionResult<GameStateDTO>> CreateGuessWord(Guid gameRoomId, Guid guessWordId,
+            NewGuessLetterRequestDTO newGuessLetterRequestDTO)
         {
-            var guessLetterString = newGuessLetterData.GuessLetter;
-            var playerName = newGuessLetterData.PlayerName;
+            var newGuessLetterDTO = new NewGuessLetterDTO
+            {
+                GameRoomId = gameRoomId,
+                GuessWordId = guessWordId,
+                PlayerId = newGuessLetterRequestDTO.PlayerId,
+                GuessLetter = newGuessLetterRequestDTO.GuessLetter
+            };
+            _logger.LogInformation("New guess letter creation: {@newGuessLetterDTO", newGuessLetterDTO);
 
-            _logger.LogInformation(
-                "Player {playerName:l} is guessing the letter {guessLetterString:l} for the word {guessWordId:l} in room {gameRoomId:l}",
-                playerName,
-                guessLetterString, guessWordId, gameRoomId);
+            var validator = new NewGuessLetterValidator(_gameRoomServiceAsync, _playerServiceAsync);
+            var validationResult = validator.Validate(newGuessLetterDTO);
 
-            var guessWord = await _gameRoomServiceAsync.GetGuessedWord(guessWordId);
-            if (guessWord == null || guessWord.GameRoom.Id != gameRoomId)
-                return BadRequest(new { message = "Guess Word was not found in such room!" });
+            if (!validationResult.IsValid) return BadRequest(validationResult.Errors);
 
-            var gameRoom = await _gameRoomServiceAsync.GetById(gameRoomId);  // gameRoomId obligatory matches guess word rooms' Id
-            if (gameRoom == null) return BadRequest(new { message = "Game Room was not found!" });
+            var gameStateDTO = await _gameRoomServiceAsync.UpdateGameRoundState(newGuessLetterDTO);
+            return StatusCode(201, gameStateDTO);
 
-            _logger.LogInformation("Room was found. Checking if player is valid...");
-            var player = await _playerServiceAsync.GetByPlayerName(playerName);
-            if (player == null) return BadRequest(new { message = "Player was not found!" });
+            // var guessWord = await _gameRoomServiceAsync.GetGuessedWord(guessWordId);
+            // if (guessWord == null || guessWord.GameRoom.Id != gameRoomId)
+            //     return BadRequest(new { message = "Guess Word was not found in such room!" });
 
-            _logger.LogInformation("Checking if the player is in the room...");
-            var gameRoomPlayer = await _gameRoomServiceAsync.GetPlayerRoomData(gameRoom.Id, player.Id);
-            if (gameRoomPlayer == null || !gameRoomPlayer.IsInRoom)
-                return BadRequest(new { message = "Player is not in the room!" }); // TODO: HOST cannot make guesses!
+            // var gameRoom = await _gameRoomServiceAsync.GetById(gameRoomId);  // gameRoomId obligatory matches guess word rooms' Id
+            // if (gameRoom == null) return BadRequest(new { message = "Game Room was not found!" });
 
-            var gameRound = guessWord.Round;
-            if (gameRound.IsOver) return BadRequest(new { message = "The round is over for this guess word!" });
+            // _logger.LogInformation("Room was found. Checking if player is valid...");
+            // var player = await _playerServiceAsync.GetByPlayerName(playerName);
+            // if (player == null) return BadRequest(new { message = "Player was not found!" });
 
-            var alreadyGuessedLetter =
-                guessWord.GuessLetters.FirstOrDefault(letter => letter.Letter == guessLetterString);
+            // _logger.LogInformation("Checking if the player is in the room...");
+            // var gameRoomPlayer = await _gameRoomServiceAsync.GetPlayerRoomData(gameRoom.Id, player.Id);
+            // if (gameRoomPlayer == null || !gameRoomPlayer.IsInRoom)
+            //     return BadRequest(new { message = "Player is not in the room!" }); // TODO: HOST cannot make guesses!
 
-            if (alreadyGuessedLetter != null)
-                return BadRequest(new { message = "This letter has already been guessed!" });
+            // var gameRound = guessWord.Round;
+            // if (gameRound.IsOver) return BadRequest(new { message = "The round is over for this guess word!" });
 
-            var updatedGameRoundState = await _gameRoomServiceAsync.UpdateGameRoundState(guessWord, guessLetterString);
-            return StatusCode(201, updatedGameRoundState);
+            // var alreadyGuessedLetter =
+            //     guessWord.GuessLetters.FirstOrDefault(letter => letter.Letter == guessLetterString);
+
+            // if (alreadyGuessedLetter != null)
+            //     return BadRequest(new { message = "This letter has already been guessed!" });
         }
     }
 }

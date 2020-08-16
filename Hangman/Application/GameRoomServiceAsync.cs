@@ -193,15 +193,18 @@ namespace Hangman.Application
             return newGuessLetter;
         }
 
-        public async Task<GameStateData> UpdateGameRoundState(GuessWord guessWord, string newGuessLetterString)
+        public async Task<GameStateDTO> UpdateGameRoundState(NewGuessLetterDTO newGuessLetterDTO)
         {
-            _logger.LogInformation("Persisting new player's move...");
-            await CreateGuessLetter(guessWord, newGuessLetterString);
+            var guessWord = await GetGuessedWord(newGuessLetterDTO.GuessWordId);
+            var newGuessLetterString = newGuessLetterDTO.GuessLetter;
 
-            var gameRound = guessWord.Round;
+            _logger.LogInformation("Persisting new player's move...");
+            await CreateGuessLetter(guessWord!, newGuessLetterString);  // previously validated guess word
+
+            var gameRound = guessWord!.Round;
             var allGuessLetters =
                 guessWord.GuessLetters.Select(letter => letter.Letter); // with new guess letter already
-            var updatedGameState = new GameStateData()
+            var updatedGameState = new GameStateDTO()
             {
                 GuessWord = null,
                 IsOver = false,

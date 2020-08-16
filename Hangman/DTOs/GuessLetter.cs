@@ -1,12 +1,23 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace Hangman.DTOs
 {
-    public class GuessLetterDTO
+    public class NewGuessLetterRequestDTO
     {
-        [Required]
-        public string GuessLetter { get; set; } = default!; // null-forgiving as this property is required
-        [Required]
-        public string PlayerName { get; set; } = default!; // null-forgiving as this property is required
+        public Guid PlayerId { get; set; }
+
+        public string GuessLetter { get; set; } = null!;
+    }
+
+    public class NewGuessLetterDTO
+    {
+        public Guid GameRoomId { get; set; }
+
+        public Guid GuessWordId { get; set; }
+
+        public Guid PlayerId { get; set; }
+
+        public string GuessLetter { get; set; } = null!;
     }
 }
