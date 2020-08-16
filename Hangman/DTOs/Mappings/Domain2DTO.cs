@@ -1,4 +1,5 @@
 using AutoMapper;
+using Hangman.Models;
 
 namespace Hangman.DTOs.Mappings
 {
@@ -6,7 +7,7 @@ namespace Hangman.DTOs.Mappings
     {
         public Domain2DTO()
         {
-            // TODO: implement response-like DTOs
+            CreateMap<GameRoomPlayer, PlayerInRoomDTO>();
         }
     }
 }
