@@ -1,11 +1,11 @@
 using FluentValidation;
 using Hangman.DTOs;
-using Hangman.Models;
-using Hangman.Repository.Interfaces;
 using System.Linq;
 
 namespace Hangman.Application
 {
+    // TODO: use rule sets to avoid a lot of duplicated code with the validation rules!
+    // TODO: create rules to avoid numbers on guess words, guess letters, etc!
     public class GameRoomPlayerValidator : AbstractValidator<JoinRoomDTO>
     {
         private readonly IGameRoomServiceAsync _gameRoomService;
@@ -18,18 +18,32 @@ namespace Hangman.Application
             _playerService = playerService;
 
             RuleFor(dto => dto.GameRoomId)
-            .MustAsync(async (gameRoomId, cancellation) =>
+            .MustAsync(async (dto, gameRoomId, context, cancellation) =>
             {
                 var gameRoom = await _gameRoomService.GetById(gameRoomId);
-                return gameRoom != null;
-            }).WithMessage("Game room was not found.");
+
+                if (gameRoom == null)
+                {
+                    context.MessageFormatter.AppendArgument("ValidationMessage", "Game room was not found.");
+                    return false;
+                }
+
+                return true;
+            });
 
             RuleFor(dto => dto.PlayerId).NotEmpty()
-            .MustAsync(async (playerId, cancellation) =>
+            .MustAsync(async (dto, playerId, context, cancellation) =>
             {
                 var player = await playerService.GetById(playerId);
-                return player != null;
-            }).WithMessage("Player was not found.");
+
+                if (player == null)
+                {
+                    context.MessageFormatter.AppendArgument("ValidationMessage", "Player was not found.");
+                    return false;
+                }
+
+                return true;
+            });
         }
     }
 
@@ -45,27 +59,46 @@ namespace Hangman.Application
             _playerService = playerService;
 
             RuleFor(dto => dto.GameRoomId)
-            .MustAsync(async (gameRoomId, cancellation) =>
+            .MustAsync(async (dto, gameRoomId, context, cancellation) =>
             {
                 var gameRoom = await _gameRoomService.GetById(gameRoomId);
+
+                if (gameRoom == null)
+                {
+                    context.MessageFormatter.AppendArgument("ValidationMessage", "Game room was not found.");
+                    return false;
+                }
+
                 return gameRoom != null;
-            }).WithMessage("Game room was not found.");
+            });
 
             RuleFor(dto => dto.PlayerId).NotEmpty()
-            .MustAsync(async (dto, playerId, cancellation) =>
+            .MustAsync(async (dto, playerId, context, cancellation) =>
             {
                 var player = await playerService.GetById(playerId);
-                return player != null;
-            }).WithMessage("Player was not found.");
+
+                if (player == null)
+                {
+                    context.MessageFormatter.AppendArgument("ValidationMessage", "Player was not found.");
+                    return false;
+                }
+
+                return true;
+            });
 
             RuleFor(dto => dto.GameRoomId).NotEmpty()
-            .MustAsync(async (dto, gameRoomId, cancellation) =>
+            .MustAsync(async (dto, gameRoomId, context, cancellation) =>
             {
                 var gameRoomPlayerData = await gameRoomService.GetPlayerRoomData(dto.GameRoomId, dto.PlayerId);
 
-                if (gameRoomPlayerData == null || !gameRoomPlayerData.IsInRoom) return false;
+                if (gameRoomPlayerData == null || !gameRoomPlayerData.IsInRoom)
+                {
+                    context.MessageFormatter.AppendArgument("ValidationMessage", "Player is not the room.");
+                    return false;
+                }
+
                 return true;
-            }).WithMessage("Player is not the room.");
+            });
         }
     }
 
@@ -81,31 +114,48 @@ namespace Hangman.Application
             _playerService = playerService;
 
             RuleFor(dto => dto.GameRoomId)
-            .MustAsync(async (gameRoomId, cancellation) =>
+            .MustAsync(async (dto, gameRoomId, context, cancellation) =>
             {
                 var gameRoom = await _gameRoomService.GetById(gameRoomId);
-                return gameRoom != null;
-            }).WithMessage("Game room was not found.");
+
+                if (gameRoom == null)
+                {
+                    context.MessageFormatter.AppendArgument("ValidationMessage", "Player was not found.");
+                    return false;
+                }
+
+                return true;
+            });
 
             RuleFor(dto => dto.PlayerId).NotEmpty()
-            .MustAsync(async (dto, playerId, cancellation) =>
+            .MustAsync(async (dto, playerId, context, cancellation) =>
             {
                 var player = await playerService.GetById(playerId);
-                return player != null;
-            }).WithMessage("Player was not found.");
+
+                if (player == null)
+                {
+                    context.MessageFormatter.AppendArgument("ValidationMessage", "Player was not found.");
+                    return false;
+                }
+
+                return true;
+            });
 
             RuleFor(dto => dto.GameRoomId).NotEmpty()
-            .MustAsync(async (dto, gameRoomId, cancellation) =>
+            .MustAsync(async (dto, gameRoomId, context, cancellation) =>
             {
                 var gameRoomPlayerData = await gameRoomService.GetPlayerRoomData(dto.GameRoomId, dto.PlayerId);
 
-                if (gameRoomPlayerData == null || !gameRoomPlayerData.IsInRoom) return false;
+                if (gameRoomPlayerData == null || !gameRoomPlayerData.IsInRoom)
+                {
+                    context.MessageFormatter.AppendArgument("ValidationMessage", "Player is not the room.");
+                    return false;
+                }
 
                 // TODO: activate so only hosts can create guess words
                 // if (!gameRoomPlayerData.IsHost) return false;
-
                 return true;
-            }).WithMessage("Player is not the room.");
+            });
         }
     }
 
@@ -121,16 +171,24 @@ namespace Hangman.Application
             _playerService = playerService;
 
             RuleFor(dto => dto.GuessWordId).NotEmpty()
-            .MustAsync(async (dto, guessWordId, cancellation) =>
+            .MustAsync(async (dto, guessWordId, context, cancellation) =>
             {
-                var guessWord = await _gameRoomService.GetGuessedWord(guessWordId);
                 var gameRoom = await _gameRoomService.GetById(dto.GameRoomId);
+                if (gameRoom == null)
+                {
+                    context.MessageFormatter.AppendArgument("ValidationMessage", "Game room was not found.");
+                    return false;
+                }
 
-                if (gameRoom == null || guessWord == null) return false;
-                if (guessWord.GameRoomId != dto.GameRoomId) return false;
+                var guessWord = await _gameRoomService.GetGuessedWord(guessWordId);
+                if (guessWord == null || guessWord.GameRoomId != dto.GameRoomId)
+                {
+                    context.MessageFormatter.AppendArgument("ValidationMessage", "Guess word was not found in such room.");
+                    return false;
+                }
 
                 return true;
-            }).WithMessage("Guess word was not found in such game room.");
+            });
         }
     }
 
@@ -198,6 +256,12 @@ namespace Hangman.Application
 
                 return true;
             });
+
+            RuleFor(dto => dto.GuessLetter)
+            .NotEmpty()
+            .MaximumLength(1)
+            .Matches("[a-zA-Z]")
+            .WithMessage("GuessLetter must be a string with single char (no numbers).");
         }
     }
 }
