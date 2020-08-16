@@ -32,4 +32,40 @@ namespace Hangman.Application
             }).WithMessage("Player was not found.");
         }
     }
+
+    public class PlayerPreviouslyInRoomValidator : AbstractValidator<LeaveRoomDTO>
+    {
+        private readonly IGameRoomServiceAsync _gameRoomService;
+        private readonly IPlayerServiceAsync _playerService;
+
+        public PlayerPreviouslyInRoomValidator(IGameRoomServiceAsync gameRoomService,
+            IPlayerServiceAsync playerService)
+        {
+            _gameRoomService = gameRoomService;
+            _playerService = playerService;
+
+            RuleFor(dto => dto.GameRoomId)
+            .MustAsync(async (gameRoomId, cancellation) =>
+            {
+                var gameRoom = await _gameRoomService.GetById(gameRoomId);
+                return gameRoom != null;
+            }).WithMessage("Game room was not found.");
+
+            RuleFor(dto => dto.PlayerId).NotEmpty()
+            .MustAsync(async (dto, playerId, cancellation) =>
+            {
+                var player = await playerService.GetById(playerId);
+                return player != null;
+            }).WithMessage("Player was not found.");
+
+            RuleFor(dto => dto.GameRoomId).NotEmpty()
+            .MustAsync(async (dto, gameRoomId, cancellation) =>
+            {
+                var gameRoomPlayerData = await gameRoomService.GetPlayerRoomData(dto.GameRoomId, dto.PlayerId);
+
+                if (gameRoomPlayerData == null) return gameRoomPlayerData != null;  // can't be null
+                return gameRoomPlayerData.IsInRoom;
+            }).WithMessage("Player is not the room.");
+        }
+    }
 }

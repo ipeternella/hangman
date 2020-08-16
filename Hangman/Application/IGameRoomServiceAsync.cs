@@ -15,8 +15,8 @@ namespace Hangman.Application
         public Task<GameRoom> Create(GameRoomDTO gameRoomDTO);
         public Task<GuessWord> CreateGuessWord(GameRoom gameRoom, string guessWord);
         public Task<PlayerInRoomDTO> JoinRoom(JoinRoomDTO joinRoomDTO);
-        public Task<GameRoomPlayer> LeaveRoom(GameRoomPlayer gameRoomPlayer);
-        public Task<GameRoomPlayer?> GetPlayerRoomData(GameRoom gameRoom, Player player);
+        public Task<PlayerInRoomDTO> LeaveRoom(LeaveRoomDTO leaveRoomDTO);
+        public Task<GameRoomPlayer?> GetPlayerRoomData(Guid gameRoomId, Guid playerId);
         public Task<GuessLetter> CreateGuessLetter(GuessWord guessWord, string guessLetter);
         public Task<GameStateData> UpdateGameRoundState(GuessWord guessWord, string guessLetterString);
         public IEnumerable<string> GetGuessWordStateSoFar(GuessWord guessWord);

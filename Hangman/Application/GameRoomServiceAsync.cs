@@ -150,23 +150,26 @@ namespace Hangman.Application
             };
             await _repositoryGameRoomPlayer.Save(gameRoomPlayer);
 
-            var playerJoinedRoomDTO = _mapper.Map<GameRoomPlayer, PlayerInRoomDTO>(gameRoomPlayer);
-            return playerJoinedRoomDTO;
+            var playerInRoomDTO = _mapper.Map<GameRoomPlayer, PlayerInRoomDTO>(gameRoomPlayer);
+            return playerInRoomDTO;
         }
 
-        public async Task<GameRoomPlayer> LeaveRoom(GameRoomPlayer gameRoomPlayer)
+        public async Task<PlayerInRoomDTO> LeaveRoom(LeaveRoomDTO leaveRoomDTO)
         {
-            _logger.LogInformation("Player {} is leaving room {}", gameRoomPlayer.PlayerId, gameRoomPlayer.GameRoomId);
-            gameRoomPlayer.IsInRoom = false;
+            _logger.LogInformation("Player to leaving room: {@leaveRoomDTO}", leaveRoomDTO);
+            var gameRoomPlayerData = await GetPlayerRoomData(leaveRoomDTO.GameRoomId, leaveRoomDTO.PlayerId);
+            gameRoomPlayerData!.IsInRoom = false;  // previously validated, never null
 
-            await _repositoryGameRoomPlayer.Update(gameRoomPlayer);
-            return gameRoomPlayer;
+            await _repositoryGameRoomPlayer.Update(gameRoomPlayerData);
+
+            var playerInRoomDTO = _mapper.Map<GameRoomPlayer, PlayerInRoomDTO>(gameRoomPlayerData);
+            return playerInRoomDTO;
         }
 
-        public async Task<GameRoomPlayer?> GetPlayerRoomData(GameRoom gameRoom, Player player)
+        public async Task<GameRoomPlayer?> GetPlayerRoomData(Guid gameRoomId, Guid playerId)
         {
             var gameRoomData =
-                await _repositoryGameRoomPlayer.Get(grp => grp.GameRoomId == gameRoom.Id && grp.PlayerId == player.Id);
+                await _repositoryGameRoomPlayer.Get(grp => grp.GameRoomId == gameRoomId && grp.PlayerId == playerId);
 
             return gameRoomData;
         }

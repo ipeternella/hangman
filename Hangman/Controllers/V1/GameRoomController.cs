@@ -69,31 +69,28 @@ namespace Hangman.Controllers.V1
 
             if (!validationResult.IsValid) return BadRequest(validationResult.Errors);
 
+            _logger.LogInformation("Validations were successfull, adding player to the room...");
             var playerInRoomDTO = await _gameRoomServiceAsync.JoinRoom(joinRoomDTO);
+
             return StatusCode(200, playerInRoomDTO);
         }
 
         [HttpPost]
         [Route("{gameRoomId}/leave")]
-        public async Task<ActionResult<GameRoom>> LeaveRoom(Guid gameRoomId, JoinRoomData joinRoomData)
+        public async Task<ActionResult<PlayerInRoomDTO>> LeaveRoom(Guid gameRoomId, PlayerIdDTO playerIdDTO)
         {
-            var playerName = joinRoomData.PlayerName;
-            _logger.LogInformation("Player {playerName:l} wants to leave room {id:l}", playerName, gameRoomId);
+            var leaveRoomDTO = new LeaveRoomDTO { GameRoomId = gameRoomId, PlayerId = playerIdDTO.PlayerId };
+            _logger.LogInformation("Leave room data received: {@leaveRoomDTO}", leaveRoomDTO);
 
-            var gameRoom = await _gameRoomServiceAsync.GetById(gameRoomId);
-            if (gameRoom == null) return BadRequest(new { message = "Game Room was not found!" });
+            var validator = new PlayerPreviouslyInRoomValidator(_gameRoomServiceAsync, _playerServiceAsync);
+            var validationResult = validator.Validate(leaveRoomDTO);
 
-            _logger.LogInformation("Room was found. Checking if player is valid...");
-            var player = await _playerServiceAsync.GetByPlayerName(playerName);
-            if (player == null) return BadRequest(new { message = "Player was not found!" });
+            if (!validationResult.IsValid) return BadRequest(validationResult.Errors);
 
-            // leave the room, if he was previously in it
-            var gameRoomPlayer = await _gameRoomServiceAsync.GetPlayerRoomData(gameRoom, player);
-            if (gameRoomPlayer == null) return BadRequest(new { message = "Player not found in this room!" });
+            _logger.LogInformation("Validations were successfull, removing player from the room...");
+            var playerInRoomDTO = await _gameRoomServiceAsync.LeaveRoom(leaveRoomDTO);
 
-            var gameRoomPlayerUpdated = await _gameRoomServiceAsync.LeaveRoom(gameRoomPlayer);
-            return StatusCode(200,
-                new { playerId = player.Id, gameRoomId = gameRoom.Id, isInRoom = gameRoomPlayerUpdated.IsInRoom });
+            return StatusCode(200, playerInRoomDTO);
         }
 
         [HttpGet]
@@ -179,7 +176,7 @@ namespace Hangman.Controllers.V1
             if (player == null) return BadRequest(new { message = "Player was not found!" });
 
             _logger.LogInformation("Checking if the player is in the room...");
-            var gameRoomPlayer = await _gameRoomServiceAsync.GetPlayerRoomData(gameRoom, player);
+            var gameRoomPlayer = await _gameRoomServiceAsync.GetPlayerRoomData(gameRoom.Id, player.Id);
             if (gameRoomPlayer == null || !gameRoomPlayer.IsInRoom)
                 return BadRequest(new { message = "Player is not in the room!" }); // TODO: HOST cannot make guesses!
 

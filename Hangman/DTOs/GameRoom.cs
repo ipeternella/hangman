@@ -19,6 +19,11 @@ namespace Hangman.DTOs
         public string PlayerName { get; set; } = default!; // null-forgiving as this property is required
     }
 
+    public class PlayerIdDTO
+    {
+        public Guid PlayerId { get; set; }
+    }
+
     public class JoinRoomDTO
     {
         [Required]
@@ -33,7 +38,10 @@ namespace Hangman.DTOs
     public class LeaveRoomDTO
     {
         [Required]
-        public GameRoomPlayer gameRoomPlayer { get; set; } = null!;
+        public Guid GameRoomId { get; set; }
+
+        [Required]
+        public Guid PlayerId { get; set; }
     }
 
     public class PlayerInRoomDTO
