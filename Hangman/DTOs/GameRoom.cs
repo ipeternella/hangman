@@ -14,9 +14,7 @@ namespace Hangman.DTOs
 
     public class PlayerDTO
     {
-        [Required]
-        [StringLength(100, ErrorMessage = "Player name can't exceed 100 characters.")]
-        public string PlayerName { get; set; } = default!; // null-forgiving as this property is required
+        public Guid PlayerId { get; set; }
     }
 
     public class PlayerIdDTO
@@ -30,7 +28,7 @@ namespace Hangman.DTOs
         public Guid GameRoomId { get; set; }
 
         [Required]
-        public string PlayerName { get; set; } = null!;
+        public Guid PlayerId { get; set; }
 
         public bool IsHost { get; set; }
     }

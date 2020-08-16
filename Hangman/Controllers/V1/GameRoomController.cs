@@ -61,7 +61,7 @@ namespace Hangman.Controllers.V1
         [Route("{gameRoomId}/join")]
         public async Task<ActionResult<PlayerInRoomDTO>> JoinRoom(Guid gameRoomId, PlayerDTO playerDTO)
         {
-            var joinRoomDTO = new JoinRoomDTO { GameRoomId = gameRoomId, PlayerName = playerDTO.PlayerName, IsHost = false };
+            var joinRoomDTO = new JoinRoomDTO { GameRoomId = gameRoomId, PlayerId = playerDTO.PlayerId, IsHost = false };
             _logger.LogInformation("Start join room validation: {@joinRoomDTO}", joinRoomDTO);
 
             var validator = new GameRoomPlayerValidator(_gameRoomServiceAsync, _playerServiceAsync);
@@ -77,9 +77,9 @@ namespace Hangman.Controllers.V1
 
         [HttpPost]
         [Route("{gameRoomId}/leave")]
-        public async Task<ActionResult<PlayerInRoomDTO>> LeaveRoom(Guid gameRoomId, PlayerIdDTO playerIdDTO)
+        public async Task<ActionResult<PlayerInRoomDTO>> LeaveRoom(Guid gameRoomId, PlayerDTO playerDTO)
         {
-            var leaveRoomDTO = new LeaveRoomDTO { GameRoomId = gameRoomId, PlayerId = playerIdDTO.PlayerId };
+            var leaveRoomDTO = new LeaveRoomDTO { GameRoomId = gameRoomId, PlayerId = playerDTO.PlayerId };
             _logger.LogInformation("Leave room data received: {@leaveRoomDTO}", leaveRoomDTO);
 
             var validator = new PlayerPreviouslyInRoomValidator(_gameRoomServiceAsync, _playerServiceAsync);

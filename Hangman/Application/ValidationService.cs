@@ -24,10 +24,10 @@ namespace Hangman.Application
                 return gameRoom != null;
             }).WithMessage("Game room was not found.");
 
-            RuleFor(dto => dto.PlayerName).NotEmpty()
-            .MustAsync(async (playerName, cancellation) =>
+            RuleFor(dto => dto.PlayerId).NotEmpty()
+            .MustAsync(async (playerId, cancellation) =>
             {
-                var player = await playerService.GetByPlayerName(playerName);
+                var player = await playerService.GetById(playerId);
                 return player != null;
             }).WithMessage("Player was not found.");
         }

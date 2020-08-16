@@ -125,9 +125,9 @@ namespace Hangman.Application
         public async Task<PlayerInRoomDTO> JoinRoom(JoinRoomDTO joinRoomDTO)
         {
             var gameRoom = await _repository.GetById(joinRoomDTO.GameRoomId);
-            var player = _repositoryPlayer.Filter(p => p.Name == joinRoomDTO.PlayerName).Result.FirstOrDefault();
+            var player = await _repositoryPlayer.GetById(joinRoomDTO.PlayerId);
             var previousGameRoomPlayer = await _repositoryGameRoomPlayer.Get(
-                grp => (grp.PlayerId == player.Id) && (grp.GameRoomId == joinRoomDTO.GameRoomId));
+                grp => (grp.PlayerId == player!.Id) && (grp.GameRoomId == joinRoomDTO.GameRoomId));
 
             if (previousGameRoomPlayer != null)
             {
