@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Hangman.Application;
+using Hangman.Services;
 using Hangman.DTOs;
 using Hangman.Models;
 using Microsoft.AspNetCore.Mvc;

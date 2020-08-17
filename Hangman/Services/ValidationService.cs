@@ -2,7 +2,7 @@ using FluentValidation;
 using Hangman.DTOs;
 using System.Linq;
 
-namespace Hangman.Application
+namespace Hangman.Services
 {
     // TODO: use rule sets to avoid a lot of duplicated code with the validation rules!
     // TODO: create rules to avoid numbers on guess words, guess letters, etc!

@@ -68,13 +68,13 @@ namespace Tests.Hangman.Integration
             // arrange
             var testingScenarioBuilder = new TestingScenarioBuilder(DbContext);
             var (rooms, players) = await testingScenarioBuilder.BuildScenarioWithThreeRoomsAndThreePlayers();  // deconstruction
-            
+
             var gameRoomOne = rooms[0];
             var playerOne = players[0];
 
             var postData = JsonConvert.SerializeObject(new
             {
-                PlayerName = playerOne.Name
+                PlayerId = playerOne.Id
             });
             var payload = new StringContent(postData, Encoding.UTF8, "application/json");
 
@@ -85,13 +85,13 @@ namespace Tests.Hangman.Integration
             // assert
             var gameRoomPlayer = await DbContext.GameRoomPlayers.FirstAsync();
             var postResponseAsJson = JObject.Parse(await postResponse.Content.ReadAsStringAsync());
-            
+
             // assert - response
             Assert.Equal(HttpStatusCode.OK, postResponse.StatusCode);
             Assert.Equal(gameRoomOne.Id.ToString(), postResponseAsJson["gameRoomId"]);
             Assert.Equal(playerOne.Id.ToString(), postResponseAsJson["playerId"]);
-            Assert.True((bool) postResponseAsJson["isInRoom"]);
-            
+            Assert.True((bool)postResponseAsJson["isInRoom"]);
+
             // assert - database
             Assert.Equal(1, await DbContext.GameRoomPlayers.CountAsync());
             Assert.Equal(gameRoomPlayer.GameRoomId, gameRoomOne.Id);
@@ -100,7 +100,7 @@ namespace Tests.Hangman.Integration
             Assert.False(gameRoomPlayer.IsBanned);
             Assert.True(gameRoomPlayer.IsInRoom);  // in room, but not host
         }
-        
+
         [Theory(DisplayName = "Should make a player rejoin a room that he had left")]
         [InlineData("/api/v1/gameroom")]
         public async Task TestPlayerShouldRejoinRoom(string url)
@@ -108,13 +108,13 @@ namespace Tests.Hangman.Integration
             // arrange
             var testingScenarioBuilder = new TestingScenarioBuilder(DbContext);
             var (gameRoom, player, _) = await testingScenarioBuilder.BuildScenarioWithAPlayerInRoom(isInRoom: false);  // deconstruction
-            
+
             var gameRoomPlayer = await DbContext.GameRoomPlayers.FindAsync(gameRoom.Id, player.Id);
             Assert.False(gameRoomPlayer.IsInRoom);  // player is NOT in the room 
 
             var postData = JsonConvert.SerializeObject(new
             {
-                PlayerName = player.Name
+                PlayerId = player.Id
             });
             var payload = new StringContent(postData, Encoding.UTF8, "application/json");
 
@@ -125,13 +125,13 @@ namespace Tests.Hangman.Integration
             // assert
             var gameRoomPlayerFromDb = await DbContext.GameRoomPlayers.FirstAsync();
             var postResponseAsJson = JObject.Parse(await postResponse.Content.ReadAsStringAsync());
-            
+
             // assert - response
             Assert.Equal(HttpStatusCode.OK, postResponse.StatusCode);
             Assert.Equal(gameRoom.Id.ToString(), postResponseAsJson["gameRoomId"]);
             Assert.Equal(player.Id.ToString(), postResponseAsJson["playerId"]);
-            Assert.True((bool) postResponseAsJson["isInRoom"]);
-            
+            Assert.True((bool)postResponseAsJson["isInRoom"]);
+
             // assert - database
             Assert.Equal(1, await DbContext.GameRoomPlayers.CountAsync());
             Assert.Equal(gameRoomPlayerFromDb.GameRoomId, gameRoom.Id);
@@ -140,7 +140,7 @@ namespace Tests.Hangman.Integration
             Assert.False(gameRoomPlayerFromDb.IsBanned);
             Assert.True(gameRoomPlayerFromDb.IsInRoom);  // player IS in room once again!
         }
-        
+
         [Theory(DisplayName = "Should make a player leave a room that he had joined")]
         [InlineData("/api/v1/gameroom")]
         public async Task TestPlayerShouldLeaveRoom(string url)
@@ -148,13 +148,13 @@ namespace Tests.Hangman.Integration
             // arrange
             var testingScenarioBuilder = new TestingScenarioBuilder(DbContext);
             var (gameRoom, player, _) = await testingScenarioBuilder.BuildScenarioWithAPlayerInRoom(isInRoom: true);  // deconstruction
-            
+
             var gameRoomPlayer = await DbContext.GameRoomPlayers.FindAsync(gameRoom.Id, player.Id);
             Assert.True(gameRoomPlayer.IsInRoom);  // player IS in the room 
 
             var postData = JsonConvert.SerializeObject(new
             {
-                PlayerName = player.Name
+                PlayerId = player.Id
             });
             var payload = new StringContent(postData, Encoding.UTF8, "application/json");
 
@@ -165,13 +165,13 @@ namespace Tests.Hangman.Integration
             // assert
             var gameRoomPlayerFromDb = await DbContext.GameRoomPlayers.FirstAsync();
             var postResponseAsJson = JObject.Parse(await postResponse.Content.ReadAsStringAsync());
-            
+
             // assert - response
             Assert.Equal(HttpStatusCode.OK, postResponse.StatusCode);
             Assert.Equal(gameRoom.Id.ToString(), postResponseAsJson["gameRoomId"]);
             Assert.Equal(player.Id.ToString(), postResponseAsJson["playerId"]);
-            Assert.False((bool) postResponseAsJson["isInRoom"]);
-            
+            Assert.False((bool)postResponseAsJson["isInRoom"]);
+
             // assert - database
             Assert.Equal(1, await DbContext.GameRoomPlayers.CountAsync());
             Assert.Equal(gameRoomPlayerFromDb.GameRoomId, gameRoom.Id);

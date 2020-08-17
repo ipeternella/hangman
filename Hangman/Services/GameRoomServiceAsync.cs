@@ -11,7 +11,7 @@ using Hangman.Models;
 using Hangman.Repository.Interfaces;
 using Microsoft.Extensions.Logging;
 
-namespace Hangman.Application
+namespace Hangman.Services
 {
     public class GameStateData
     {

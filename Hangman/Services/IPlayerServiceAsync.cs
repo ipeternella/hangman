@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Hangman.Models;
 
-namespace Hangman.Application
+namespace Hangman.Services
 {
     public interface IPlayerServiceAsync
     {

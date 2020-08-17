@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Hangman.Application;
+using Hangman.Services;
 using Hangman.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -27,9 +27,9 @@ namespace Hangman.Controllers.V1
         {
             _logger.LogInformation("Calling playerService to get player with id: {id:l}", id);
             var player = await _playerServiceAsync.GetById(id);
-            
+
             if (player != null) return Ok(player);
-            
+
             return NotFound();
         }
 
@@ -48,8 +48,8 @@ namespace Hangman.Controllers.V1
         {
             var player = await _playerServiceAsync.Create(newPlayerData);
             _logger.LogInformation("New player has been created, name: {name}", player.Name);
-            
-            return CreatedAtAction(nameof(GetById), new {id = player.Id}, player);
+
+            return CreatedAtAction(nameof(GetById), new { id = player.Id }, player);
         }
     }
 }

@@ -1,6 +1,6 @@
 using System.Linq;
 using Hangman;
-using Hangman.Application;
+using Hangman.Services;
 using Hangman.Business;
 using Hangman.Repository;
 using Hangman.Repository.Interfaces;
@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using AutoMapper;
 using Serilog;
 
 namespace Tests.Hangman.Support
@@ -26,7 +27,7 @@ namespace Tests.Hangman.Support
         }
 
         public IConfiguration Configuration { get; }
-        
+
         public void ConfigureServices(IServiceCollection services)
         {
             // this is required to add the controllers of the main Hangman project
@@ -39,6 +40,7 @@ namespace Tests.Hangman.Support
                 .AddScoped<IGameRoomServiceAsync, GameRoomServiceAsync>()
                 .AddScoped<IPlayerServiceAsync, PlayerServiceAsync>()
                 .AddScoped<IHangmanGame, HangmanGame>()
+                .AddAutoMapper(startupAssembly)
                 .AddControllers()
                 .AddApplicationPart(startupAssembly) // adds controllers from main project
                 .AddControllersAsServices();
@@ -63,12 +65,12 @@ namespace Tests.Hangman.Support
 
             // middleware for activating the health check UI
             app.UseHealthChecksUI(options => options.UIPath = "/healthcheck-dashboard");
-            
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
-            
+
             Migrate();
         }
 
@@ -84,7 +86,7 @@ namespace Tests.Hangman.Support
                 .Options;
 
             var context = new HangmanDbContext(options);
-            
+
             // always execute possible missing migrations
             if (!context.Database.GetPendingMigrations().ToList().Any()) return;
             context.Database.Migrate();

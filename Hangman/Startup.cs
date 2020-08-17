@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using Hangman.Application;
+using Hangman.Services;
 using Hangman.Business;
 using Hangman.Models;
 using Microsoft.AspNetCore.Builder;

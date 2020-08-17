@@ -20,7 +20,8 @@ namespace Hangman.Models
 
     public class GameRound : BaseEntity
     {
-        [Range(0, 6)] public int Health { get; set; } = 6;
+        [Range(0, 6)]
+        public int Health { get; set; } = 6;
 
         public bool IsOver { get; set; } = false;
 

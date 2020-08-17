@@ -2,11 +2,12 @@
 
     <PropertyGroup>
         <TargetFramework>netcoreapp3.1</TargetFramework>
-
         <IsPackable>false</IsPackable>
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="FluentValidation" Version="9.1.2" />
+        <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.0.1" />
         <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="3.1.5" />
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.5" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
@@ -25,18 +26,4 @@
     <ItemGroup>
       <ProjectReference Include="..\Hangman\Hangman.csproj" />
     </ItemGroup>
-
-    <ItemGroup>
-      <Compile Remove="Hangman\Utilities\**" />
-      <Compile Remove="Hangman\Unit\UnitTest1.cs" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <EmbeddedResource Remove="Hangman\Utilities\**" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <None Remove="Hangman\Utilities\**" />
-    </ItemGroup>
-
 </Project>

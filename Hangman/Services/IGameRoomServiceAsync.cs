@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Hangman.DTOs;
 using Hangman.Models;
 
-namespace Hangman.Application
+namespace Hangman.Services
 {
     public interface IGameRoomServiceAsync
     {
