@@ -1,0 +1,9 @@
+<SonarQubeAnalysisProperties xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns="http://www.sonarsource.com/msbuild/integration/2015/1">
+
+    <!-- Properties that are used by the SonarQube Scanner for MSBuild when generating final properties file. 
+    More at: https://github.com/SonarSource/sonar-scanner-msbuild/blob/master/docs/SonarQube.Analysis.xml -->
+    <Property Name="sonar.cs.opencover.reportsPaths">**/*/coverage.opencover.xml</Property>
+    <Property Name="sonar.cs.vstest.reportsPaths">**/*/*.trx</Property>
+</SonarQubeAnalysisProperties>
