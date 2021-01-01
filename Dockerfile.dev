@@ -9,10 +9,21 @@ ARG DOTNETCORE_VERSION
 
 WORKDIR /app
 
-# Restores (downloads) all NuGet packages from all projects of the solution (Test is ignored)
-COPY . ./
-RUN dotnet restore ./$MAIN_PROJECT_NAME/$MAIN_PROJECT_NAME.csproj
+# Java for Sonar:
+# 1. adds PPA software repository (bionic > main section) to the apt sources list (java)
+# 2. downloads specific public key to verify and download the signed java package from PPA
+# 3. adds yes to oracle license in order to auto yes the java install package
+RUN echo "deb http://ppa.launchpad.net/linuxuprising/java/ubuntu bionic main" | tee /etc/apt/sources.list.d/linuxuprising-java.list && \
+    APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1 apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 73C3DB2A && apt-get update && \
+    echo oracle-java15-installer shared/accepted-oracle-license-v1-2 select true | /usr/bin/debconf-set-selections && apt-get -y install openjdk-15-jre
+
+# Dotnet sonar scanner installation
+RUN dotnet tool install --global dotnet-sonarscanner
+ENV PATH="${PATH}:/root/.dotnet/tools"
 
 # Ef tools installation
 RUN dotnet tool install --global dotnet-ef
 ENV PATH="${PATH}:/root/.dotnet/tools"
+
+# Restores (downloads) all NuGet packages from all projects of the solution (Test is ignored)
+COPY . ./

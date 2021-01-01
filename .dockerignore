@@ -1,6 +1,8 @@
 *
 !Hangman
+!Scripts
 **/bin
 **/obj
 **/out
 **/Properties
+!runsettings.xml

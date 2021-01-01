@@ -15,8 +15,6 @@ services:
       dockerfile: Dockerfile.dev
     env_file:
       - .env
-    volumes:
-      - .:/app
     ports:
       - "${ASPNETCORE_SOCKET_BIND_PORT}:${ASPNETCORE_SOCKET_BIND_PORT}"
     depends_on:
@@ -35,6 +33,26 @@ services:
         "120",
         "--",
         "./Scripts/start-from-compose.sh",
+      ]
+
+  tests:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    env_file:
+      - .env
+    depends_on:
+      - db
+    volumes:
+      - "./Tests:/app/Tests"
+    command:
+      [
+        "./Scripts/wait-for-it.sh",
+        "db:5432",
+        "-t",
+        "120",
+        "--",
+        "./Scripts/start-tests.sh",
       ]
 
   # ELK stack
