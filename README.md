@@ -11,7 +11,7 @@
 
 ![Alt text](Docs/Img/HangmanLogo.png)
 
-A Hangman (the old classic guess-the-word game) gaming API written in `C#` with `ASP.NET core` framework. This application comes with two extra features:
+A Hangman (the old classic guess-the-word game) gaming API written in `C#` with `ASP.NET core` framework. This project comes with the following extra features (besides the game itself) that are important for production-ready scenarios:
 
 - `Serilog` logging configuration for sending logs to Elasticsearch
 - `Elasticsearch` instance to receive log messages
