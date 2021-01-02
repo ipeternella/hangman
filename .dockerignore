@@ -7,3 +7,4 @@
 **/Properties
 !runsettings.xml
 !sonar-project-msbuild.xml
+!*.sh
