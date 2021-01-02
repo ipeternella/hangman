@@ -1,8 +1,21 @@
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ipeternella_hangman&metric=alert_status)](https://sonarcloud.io/dashboard?id=ipeternella_hangman)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=ipeternella_hangman&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=ipeternella_hangman)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=ipeternella_hangman&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=ipeternella_hangman)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=ipeternella_hangman&metric=security_rating)](https://sonarcloud.io/dashboard?id=ipeternella_hangman)
+[![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=ipeternella_hangman&metric=sqale_index)](https://sonarcloud.io/dashboard?id=ipeternella_hangman)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=ipeternella_hangman&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=ipeternella_hangman)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=ipeternella_hangman&metric=code_smells)](https://sonarcloud.io/dashboard?id=ipeternella_hangman)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=ipeternella_hangman&metric=coverage)](https://sonarcloud.io/dashboard?id=ipeternella_hangman)
+
 # Hangman
 
 ![Alt text](Docs/Img/HangmanLogo.png)
 
-A Hangman (the old classic guess-the-word game) gaming API written in `C#` with `ASP.NET core` framework.
+A Hangman (the old classic guess-the-word game) gaming API written in `C#` with `ASP.NET core` framework. This application comes with two extra features:
+
+- `Serilog` logging configuration for sending logs to Elasticsearch
+- `Elasticsearch` instance to receive log messages
+- `Sonarqube` configuration which contains an `MSBuild` xml configuration for sonarqube along with the tools required to collect test coverage such as `coverlet.collector` Nuget package and a `runsettings.xml` file to setup coverage file formats.
 
 ## API demo: winning (guessing) the word without being hanged
 
@@ -24,8 +37,6 @@ This application's architecture uses layered-design that can roughly be divided 
 - `Infra layer`
 
 This model is much simpler than other famous modelings approaches, such as Domain Driven Design, but that's not a problem! It's actually just a different architectural approach that is definitely effective for domains that are not so complex but, at the same time, require more than bare CRUD logic.
-
-This application comes with `Serilog` configure for sending logs to console's stdout and Elasticsearch (locally brought up via `docker-compose`).
 
 # Hangman modeling (entities)
 
