@@ -1,12 +1,3 @@
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ipeternella_hangman&metric=alert_status)](https://sonarcloud.io/dashboard?id=ipeternella_hangman)
-[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=ipeternella_hangman&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=ipeternella_hangman)
-[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=ipeternella_hangman&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=ipeternella_hangman)
-[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=ipeternella_hangman&metric=security_rating)](https://sonarcloud.io/dashboard?id=ipeternella_hangman)
-[![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=ipeternella_hangman&metric=sqale_index)](https://sonarcloud.io/dashboard?id=ipeternella_hangman)
-[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=ipeternella_hangman&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=ipeternella_hangman)
-[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=ipeternella_hangman&metric=code_smells)](https://sonarcloud.io/dashboard?id=ipeternella_hangman)
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=ipeternella_hangman&metric=coverage)](https://sonarcloud.io/dashboard?id=ipeternella_hangman)
-
 # Hangman
 
 ![Alt text](Docs/Img/HangmanLogo.png)
